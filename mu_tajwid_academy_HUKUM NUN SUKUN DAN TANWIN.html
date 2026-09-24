@@ -1,0 +1,1649 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MU Tajwid Academy - Chapters 0 to 7 & Grand Final Tournament</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Arabic Fonts (Amiri & Scheherazade New) + Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600;700;800;900&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            overflow-x: hidden;
+            user-select: none;
+        }
+
+        .font-arabic {
+            font-family: 'Scheherazade New', 'Amiri', serif;
+            direction: rtl;
+            line-height: 1.9;
+        }
+
+        /* Football Pitch & Stadium Pattern */
+        .pitch-bg {
+            background-color: #15803d;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.15) 2px, transparent 2px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.15) 2px, transparent 2px);
+            background-size: 50px 50px;
+        }
+
+        .stadium-gradient {
+            background: radial-gradient(circle at top, #b91c1c 0%, #7f1d1d 50%, #0f172a 100%);
+        }
+
+        /* Red Academy Card Styling */
+        .academy-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98));
+            border: 2px solid rgba(239, 68, 68, 0.4);
+            box-shadow: 0 10px 25px -5px rgba(220, 38, 38, 0.3);
+        }
+
+        .player-card-bg {
+            background: linear-gradient(145deg, #dc2626 0%, #991b1b 50%, #450a0a 100%);
+            border: 3px solid #f59e0b;
+        }
+
+        .trophy-card-bg {
+            background: linear-gradient(145deg, #b45309 0%, #78350f 50%, #1e1b4b 100%);
+            border: 3px solid #38bdf8;
+        }
+
+        /* Goal & Pulse Animations */
+        @keyframes goalPop {
+            0% { transform: scale(0.3) rotate(-10deg); opacity: 0; }
+            50% { transform: scale(1.2) rotate(5deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        .animate-goal {
+            animation: goalPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes bounceSlow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .animate-bounce-slow {
+            animation: bounceSlow 2s infinite ease-in-out;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #dc2626;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between bg-slate-950 text-slate-100">
+
+    <!-- TOP SCOREBOARD HEADER -->
+    <header id="mainHeader" class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b-2 border-red-600 px-4 py-3 shadow-lg">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <!-- Academy Brand -->
+            <div class="flex items-center space-x-3 space-x-reverse cursor-pointer" onclick="app.showHome()">
+                <div class="w-10 h-10 rounded-full bg-red-600 border-2 border-amber-400 flex items-center justify-center font-extrabold text-white text-lg shadow-md">
+                    MU
+                </div>
+                <div>
+                    <h1 class="text-base sm:text-lg font-black tracking-tight text-white flex items-center gap-1.5">
+                        <span class="text-red-500">🔴</span> MU TAJWID ACADEMY
+                    </h1>
+                    <p id="headerChapterLabel" class="text-xs text-amber-400 font-semibold">CHAPTER 0 — FONDASI NUN SUKUN & TANWIN</p>
+                </div>
+            </div>
+
+            <!-- Scoreboard & Goal Counter -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <!-- Chapter Selector Button -->
+                <button onclick="app.showChapterSelectModal()" class="flex items-center gap-1.5 bg-red-950/80 hover:bg-red-900 border border-red-500/60 px-3 py-1.5 rounded-xl text-xs font-bold text-amber-300 transition">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span class="hidden sm:inline">PILIH CHAPTER</span>
+                </button>
+
+                <!-- Player Name Badge in Header -->
+                <div id="headerPlayerBadge" class="hidden md:flex items-center gap-1.5 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-xl text-xs font-bold text-amber-300">
+                    <span>👕</span>
+                    <span id="headerPlayerName">Santri</span>
+                </div>
+
+                <div class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-1.5 flex items-center gap-2">
+                    <span class="text-2xl animate-bounce-slow">⚽</span>
+                    <div>
+                        <div class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">TOTAL GOAL</div>
+                        <div id="headerGoalCount" class="text-lg font-extrabold text-amber-400 leading-none">0</div>
+                    </div>
+                </div>
+
+                <button onclick="app.promptRestartGame()" title="Ulangi dari awal" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- PROGRESS BAR -->
+        <div class="max-w-4xl mx-auto mt-2">
+            <div class="flex justify-between items-center text-xs text-slate-400 mb-1 font-semibold">
+                <span id="stageLabel">STADION UTAMA</span>
+                <span id="progressText">0 / 10 TAHAP</span>
+            </div>
+            <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden border border-slate-700">
+                <div id="progressBar" class="bg-gradient-to-r from-red-600 to-amber-500 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER FOR VIEWS -->
+    <main id="appContainer" class="flex-grow max-w-4xl w-full mx-auto p-4 sm:p-6 flex flex-col justify-center">
+        <!-- Content dynamically injected here -->
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 border-t border-slate-800 py-3 text-center text-xs text-slate-500">
+        <div class="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
+            <div>🔴 <strong>MU Tajwid Academy</strong> &bull; Media Belajar Tajwid Interaktif Anak</div>
+            <div class="text-slate-400">Metode Visual Football Academy &bull; Seri Lengkap Nun Sukun & Tanwin (Chapter 0-7 & Grand Final)</div>
+        </div>
+    </footer>
+
+    <!-- GOAL / FEEDBACK MODAL OVERLAY -->
+    <div id="feedbackModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div id="feedbackCard" class="academy-card rounded-2xl p-6 sm:p-8 max-w-md w-full text-center transform transition-all scale-95 border-2">
+            <div id="feedbackIcon" class="text-6xl mb-3">⚽</div>
+            <h2 id="feedbackTitle" class="text-2xl sm:text-3xl font-extrabold text-white mb-2">GOAL!</h2>
+            <p id="feedbackMessage" class="text-slate-200 text-sm sm:text-base mb-6 font-medium leading-relaxed"></p>
+            <button id="feedbackBtn" onclick="app.closeFeedback()" class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-black text-lg shadow-lg hover:shadow-red-600/50 transition transform active:scale-95 flex items-center justify-center gap-2">
+                <span>LANJUTKAN</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- HINT DIALOG MODAL -->
+    <div id="hintModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="academy-card border-amber-500/50 rounded-2xl p-6 max-w-md w-full text-center">
+            <div class="w-14 h-14 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-3 text-amber-400 text-2xl border border-amber-500/40">
+                <i class="fa-solid fa-lightbulb"></i>
+            </div>
+            <h3 id="hintTitle" class="text-xl font-bold text-amber-400 mb-2">💡 PETUNJUK STRATEGI</h3>
+            <div id="hintBody" class="bg-slate-900/90 border border-slate-700 rounded-xl p-4 text-slate-200 text-sm font-medium mb-5 text-left leading-relaxed">
+                <!-- Hint content -->
+            </div>
+            <button onclick="app.closeHint()" class="w-full py-3 px-5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-base shadow-lg transition">
+                AKU PAHAM, COBA LAGI!
+            </button>
+        </div>
+    </div>
+
+    <!-- CUSTOM CONFIRM MODAL -->
+    <div id="customConfirmModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="academy-card border-red-500/50 rounded-2xl p-6 max-w-md w-full text-center">
+            <div class="w-14 h-14 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-3 text-red-400 text-2xl border border-red-500/40">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">ULANGI PERMAINAN?</h3>
+            <p class="text-slate-300 text-sm mb-6">Apakah kamu yakin ingin mengulang dari awal? Seluruh skor goal dan kemajuanmu akan diperbarui.</p>
+            <div class="flex gap-3">
+                <button onclick="app.closeConfirmModal(false)" class="w-1/2 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm">BATAL</button>
+                <button onclick="app.closeConfirmModal(true)" class="w-1/2 py-3 rounded-xl bg-red-600 hover:bg-red-500 text-white font-black text-sm shadow-lg">YA, ULANGI</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHAPTER SELECTOR MODAL -->
+    <div id="chapterModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="academy-card border-red-600/60 rounded-3xl p-6 max-w-xl w-full text-center max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center pb-3 mb-4 border-b border-slate-800">
+                <h3 class="text-lg font-black text-amber-400 flex items-center gap-2">
+                    <i class="fa-solid fa-trophy text-red-500"></i>
+                    <span>PILIH CHAPTER ACADEMY</span>
+                </h3>
+                <button onclick="app.closeChapterSelectModal()" class="text-slate-400 hover:text-white text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="space-y-2.5 mb-4 text-left">
+                <!-- Chapter 0 -->
+                <button onclick="app.selectChapter(0)" class="w-full p-3.5 rounded-2xl bg-slate-900 border-2 border-slate-700 hover:border-amber-400 transition flex items-center justify-between group">
+                    <div>
+                        <div class="text-[10px] text-amber-400 font-extrabold uppercase">CHAPTER 0</div>
+                        <div class="text-sm font-black text-white group-hover:text-amber-300">FONDASI NUN SUKUN & TANWIN</div>
+                        <div class="text-xs text-slate-400">Mengenal Bentuk, Harakat Tanwin, & Perbedaan Bunyi 'N'</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-500 group-hover:text-amber-400"></i>
+                </button>
+
+                <!-- Chapter 1 -->
+                <button onclick="app.selectChapter(1)" class="w-full p-3.5 rounded-2xl bg-slate-900 border-2 border-slate-700 hover:border-amber-400 transition flex items-center justify-between group">
+                    <div>
+                        <div class="text-[10px] text-amber-400 font-extrabold uppercase">CHAPTER 1</div>
+                        <div class="text-sm font-black text-white group-hover:text-amber-300">IZHAR HALQI</div>
+                        <div class="text-xs text-slate-400">Membaca Jelas & Tegas Tanpa Dengung (6 Huruf Halqi)</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-500 group-hover:text-amber-400"></i>
+                </button>
+
+                <!-- Chapter 2 -->
+                <button onclick="app.selectChapter(2)" class="w-full p-3.5 rounded-2xl bg-slate-900 border-2 border-slate-700 hover:border-amber-400 transition flex items-center justify-between group">
+                    <div>
+                        <div class="text-[10px] text-amber-400 font-extrabold uppercase">CHAPTER 2</div>
+                        <div class="text-sm font-black text-white group-hover:text-amber-300">IDGHAM BIGHUNNAH</div>
+                        <div class="text-xs text-slate-400">Lebur Masuk dengan Dengung 2 Harakat (Rumus YANMU: ي, ن, م, و)</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-500 group-hover:text-amber-400"></i>
+                </button>
+
+                <!-- Chapter 3 -->
+                <button onclick="app.selectChapter(3)" class="w-full p-3.5 rounded-2xl bg-slate-900 border-2 border-slate-700 hover:border-amber-400 transition flex items-center justify-between group">
+                    <div>
+                        <div class="text-[10px] text-amber-400 font-extrabold uppercase">CHAPTER 3</div>
+                        <div class="text-sm font-black text-white group-hover:text-amber-300">IDGHAM BILAGHUNNAH</div>
+                        <div class="text-xs text-slate-400">Lebur Masuk Tanpa Dengung (Huruf Lam & Ra: ل , ر)</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-500 group-hover:text-amber-400"></i>
+                </button>
+
+                <!-- Chapter 4 -->
+                <button onclick="app.selectChapter(4)" class="w-full p-3.5 rounded-2xl bg-slate-900 border-2 border-slate-700 hover:border-amber-400 transition flex items-center justify-between group">
+                    <div>
+                        <div class="text-[10px] text-amber-400 font-extrabold uppercase">CHAPTER 4</div>
+                        <div class="text-sm font-black text-white group-hover:text-amber-300">HUKUM IQLAB</div>
+                        <div class="text-xs text-slate-400">Pertukaran Bunyi 'N' ke 'M' + Dengung (Huruf Ba: ب)</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-500 group-hover:text-amber-400"></i>
+                </button>
+
+                <!-- Chapter 5 -->
+                <button onclick="app.selectChapter(5)" class="w-full p-3.5 rounded-2xl bg-slate-900 border-2 border-slate-700 hover:border-amber-400 transition flex items-center justify-between group">
+                    <div>
+                        <div class="text-[10px] text-amber-400 font-extrabold uppercase">CHAPTER 5</div>
+                        <div class="text-sm font-black text-white group-hover:text-amber-300">IKHFA HAQIQI</div>
+                        <div class="text-xs text-slate-400">Membaca Samar Antara Izhar & Idgham (15 Huruf)</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-500 group-hover:text-amber-400"></i>
+                </button>
+
+                <!-- Chapter 6 -->
+                <button onclick="app.selectChapter(6)" class="w-full p-3.5 rounded-2xl bg-slate-900 border-2 border-slate-700 hover:border-amber-400 transition flex items-center justify-between group">
+                    <div>
+                        <div class="text-[10px] text-amber-400 font-extrabold uppercase">CHAPTER 6</div>
+                        <div class="text-sm font-black text-white group-hover:text-amber-300">IZHAR MUTLAQ (PENGECUALIAN 1 KATA)</div>
+                        <div class="text-xs text-slate-400">Bila Nun Sukun Bertemu Huruf Idgham Dalam 1 Kata (Harus Jelas)</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-500 group-hover:text-amber-400"></i>
+                </button>
+
+                <!-- Chapter 7 -->
+                <button onclick="app.selectChapter(7)" class="w-full p-3.5 rounded-2xl bg-slate-900 border-2 border-slate-700 hover:border-amber-400 transition flex items-center justify-between group">
+                    <div>
+                        <div class="text-[10px] text-amber-400 font-extrabold uppercase">CHAPTER 7</div>
+                        <div class="text-sm font-black text-white group-hover:text-amber-300">SIMULASI TAKTIS TERPADU</div>
+                        <div class="text-xs text-slate-400">Latihan Terpadu Membedakan Semua Hukum Nun Sukun & Tanwin</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-500 group-hover:text-amber-400"></i>
+                </button>
+
+                <!-- Grand Final Tournament -->
+                <button onclick="app.selectChapter(8)" class="w-full p-4 rounded-2xl bg-gradient-to-r from-amber-950 via-slate-900 to-red-950 border-2 border-amber-400 hover:border-amber-300 transition flex items-center justify-between group">
+                    <div>
+                        <div class="text-xs text-amber-300 font-black flex items-center gap-1">
+                            <span>🏆 GRAND FINAL TOURNAMENT</span>
+                            <span class="px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-black text-[9px]">ALL-STAR</span>
+                        </div>
+                        <div class="text-base font-black text-amber-400 group-hover:text-white">TANTANGAN AGUNG SQUAD ALL-STAR</div>
+                        <div class="text-xs text-amber-200">Uji Seluruh Hukum Tajwid Nun Sukun & Tanwin Lengkap!</div>
+                    </div>
+                    <i class="fa-solid fa-trophy text-amber-400"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // SOUND SYNTHESIZER (WEB AUDIO API)
+        class SoundSynth {
+            constructor() {
+                this.ctx = null;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                    if (AudioContextClass) {
+                        this.ctx = new AudioContextClass();
+                    }
+                }
+                if (this.ctx && this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            }
+
+            playKick() {
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    const now = this.ctx.currentTime;
+                    osc.frequency.setValueAtTime(160, now);
+                    osc.frequency.exponentialRampToValueAtTime(30, now + 0.12);
+                    gain.gain.setValueAtTime(0.8, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+                    osc.start(now);
+                    osc.stop(now + 0.12);
+                } catch (e) {}
+            }
+
+            playGoal() {
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const now = this.ctx.currentTime;
+                    const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                    notes.forEach((freq, i) => {
+                        const osc = this.ctx.createOscillator();
+                        const gain = this.ctx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.value = freq;
+                        osc.connect(gain);
+                        gain.connect(this.ctx.destination);
+                        const startTime = now + (i * 0.08);
+                        gain.gain.setValueAtTime(0, startTime);
+                        gain.gain.linearRampToValueAtTime(0.3, startTime + 0.02);
+                        gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.35);
+                        osc.start(startTime);
+                        osc.stop(startTime + 0.35);
+                    });
+                } catch (e) {}
+            }
+
+            playTryAgain() {
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const now = this.ctx.currentTime;
+                    const notes = [330, 261.63]; // E4, C4
+                    notes.forEach((freq, i) => {
+                        const osc = this.ctx.createOscillator();
+                        const gain = this.ctx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.value = freq;
+                        osc.connect(gain);
+                        gain.connect(this.ctx.destination);
+                        const startTime = now + (i * 0.15);
+                        gain.gain.setValueAtTime(0.25, startTime);
+                        gain.gain.exponentialRampToValueAtTime(0.01, startTime + 0.25);
+                        osc.start(startTime);
+                        osc.stop(startTime + 0.25);
+                    });
+                } catch (e) {}
+            }
+
+            playWhistle() {
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sine';
+                    const now = this.ctx.currentTime;
+                    osc.frequency.setValueAtTime(2500, now);
+                    osc.frequency.setValueAtTime(2800, now + 0.05);
+                    osc.frequency.setValueAtTime(2500, now + 0.1);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } catch (e) {}
+            }
+
+            playHint() {
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sine';
+                    const now = this.ctx.currentTime;
+                    osc.frequency.setValueAtTime(880, now);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.2);
+                } catch (e) {}
+            }
+
+            playClick() {
+                this.init();
+                if (!this.ctx) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sine';
+                    const now = this.ctx.currentTime;
+                    osc.frequency.setValueAtTime(800, now);
+                    osc.frequency.exponentialRampToValueAtTime(400, now + 0.05);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.05);
+                } catch (e) {}
+            }
+        }
+
+        const audio = new SoundSynth();
+
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // MOTIVATIONAL QUOTES & INSPIRATIONS FOR CHAPTERS 0 TO 8
+        const CHAPTER_QUOTES = {
+            0: {
+                arabic: "اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ",
+                translation: "Bacalah dengan (menyebut) nama Tuhanmu yang menciptakan. (QS. Al-'Alaq: 1)",
+                spark: "⚽ Fondasi Squad: Pahami perbedaan Nun Sukun (نْ) dan Tanwin ( ً ٍ ٌ ) sebelum melancarkan operan tajwid!"
+            },
+            1: {
+                arabic: "وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا",
+                translation: "Dan bacalah Al-Qur'an itu dengan perlahan-lahan (tartil). (QS. Al-Muzzammil: 4)",
+                spark: "🔊 Taktik Izhar Halqi: Bunyikan huruf 'N' secara tegas, jelas, dan tanpa dengung bagaikan tembakan lurus!"
+            },
+            2: {
+                arabic: "خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ",
+                translation: "Sebaik-baik kalian adalah yang mempelajari Al-Qur'an dan mengajarkannya. (HR. Bukhari)",
+                spark: "⚡ Taktik Idgham Bighunnah: Leburkan bunyi dengan dengung 2 harakat yang merdu bagaikan serangan balik cepat!"
+            },
+            3: {
+                arabic: "فَاقْرَءُوا مَا تَيَسَّرَ مِنَ الْقُرْآنِ",
+                translation: "Maka bacalah apa yang mudah bagimu dari Al-Qur'an. (QS. Al-Muzzammil: 20)",
+                spark: "🛡️ Taktik Idgham Bilaghunnah: Masukkan bunyi ke Lam & Ra secara lancar dan tegas tanpa dengung!"
+            },
+            4: {
+                arabic: "إِنَّ هَٰذَا الْقُرْآنَ يَهْدِي لِلَّتِي هِيَ أَقْوَمُ",
+                translation: "Sungguh, Al-Qur'an ini memberi petunjuk ke jalan yang paling lurus. (QS. Al-Isra: 9)",
+                spark: "🔄 Taktik Iqlab: Tukar bunyi 'N' menjadi 'M' dengan mulus saat bertemu Ba (ب) bagaikan umpan silang akurat!"
+            },
+            5: {
+                arabic: "الَّذِي عَلَّمَ بِالْقَلَمِ",
+                translation: "Yang mengajar (manusia) dengan perantaraan kalam. (QS. Al-'Alaq: 4)",
+                spark: "🌫️ Taktik Ikhfa Haqiqi: Samarkan bunyi 'N' di bibir/lidah & dengungkan 2 harakat pada 15 huruf!"
+            },
+            6: {
+                arabic: "كِتَابٌ أَنْزَلْنَاهُ إِلَيْكَ مُبَارَكٌ",
+                translation: "Ini adalah sebuah kitab yang Kami turunkan kepadamu penuh dengan berkah. (QS. Sad: 29)",
+                spark: "🚨 Taktik Izhar Mutlaq: Ingat pengecualian! Jika Nun Sukun & huruf Idgham berada dalam 1 KATA, wajib dibaca JELAS!"
+            },
+            7: {
+                arabic: "وَفِي ذَٰلِكَ فَلْيَتَنَافَسِ الْمُتَنَافِسُونَ",
+                translation: "Dan untuk yang demikian itu hendaknya orang berlomba-lomba. (QS. Al-Mutaffifin: 26)",
+                spark: "🎯 Simulasi Terpadu: Uji ketelitianmu membedakan 5 Hukum Utama Tajwid Nun Sukun & Tanwin!"
+            },
+            8: {
+                arabic: "فَإِذَا عَزَمْتَ فَتَوَكَّلْ عَلَى اللَّهِ",
+                translation: "Kemudian apabila kamu telah membulatkan tekad, maka bertawakallah kepada Allah. (QS. Ali Imran: 159)",
+                spark: "🏆 GRAND FINAL: Tunjukkan seluruh penguasaan tajwidmu dan raih Julukan Legenda Emas Tajwid All-Star!"
+            }
+        };
+
+        const CHAPTER_BANKS = {
+            // CHAPTER 0: FONDASI NUN SUKUN & TANWIN
+            0: {
+                letters: [
+                    { word: "مِنْ", prompt: "Manakah simbol Nun Sukun pada lafaz ini?", options: ["نْ (Nun dengan tanda Sukun)", "مِ (Mim Kasrah)", "نَ (Nun Fathah)"], correct: "نْ (Nun dengan tanda Sukun)", hint1: "Perhatikan huruf Nun yang memiliki lingkaran sukun di atasnya.", hint2: "Huruf Nun berharakat mati/sukun (نْ)." },
+                    { word: "كِتَابٌ", prompt: "Tanda harakat apakah yang ada pada huruf akhir lafaz ini?", options: ["Dhammadain / Tanwin Dhammah ( ٌ )", "Fathatain ( ً )", "Kasratain ( ٍ )"], correct: "Dhammadain / Tanwin Dhammah ( ٌ )", hint1: "Lihat dua lengkungan di atas huruf Ba (بٌ).", hint2: "Itu adalah Tanwin Dhammah ( ٌ )." },
+                    { word: "مَاءً", prompt: "Tanda Tanwin apakah yang terdapat pada huruf Hamzah ini?", options: ["Fathatain / Tanwin Fathah ( ً )", "Kasratain ( ٍ )", "Dhammadain ( ٌ )"], correct: "Fathatain / Tanwin Fathah ( ً )", hint1: "Lihat dua garis di atas huruf Hamzah (ءً).", hint2: "Dua garis di atas adalah Fathatain ( ً )." },
+                    { word: "عَذَابٍ", prompt: "Tanda Tanwin apakah yang terdapat di bawah huruf Ba?", options: ["Kasratain / Tanwin Kasrah ( ٍ )", "Fathatain ( ً )", "Sukun ( ْ )"], correct: "Kasratain / Tanwin Kasrah ( ٍ )", hint1: "Lihat dua garis di bawah huruf Ba (بٍ).", hint2: "Dua garis di bawah dinamakan Kasratain." },
+                    { word: "عَلِيمٌ", prompt: "Bunyi akhir apakah yang terdengar saat membaca Tanwin pada kata 'Alimun'?", options: ["Bunyi 'N' mati (An/In/Un)", "Bunyi 'M' mati", "Bunyi 'L' mati"], correct: "Bunyi 'N' mati (An/In/Un)", hint1: "Tanwin menghasilkan bunyi 'N' sukun tersembunyi secara lisan.", hint2: "Semua Tanwin menghasilkan bunyi akhiran 'N'." }
+                ],
+                rules: [
+                    { word: "نْ vs  ً ٍ ٌ", prompt: "Apa persamaan utama antara Nun Sukun (نْ) dan Tanwin ( ً ٍ ٌ ) dalam Tajwid?", options: ["Sama-sama menghasilkan bunyi 'N' mati secara lisan", "Sama-sama ditulis dengan huruf Nun", "Sama-sama tidak bersuara"], correct: "Sama-sama menghasilkan bunyi 'N' mati secara lisan", hint1: "Keduanya dibaca dengan akhiran suara 'N' dalam lisan.", hint2: "Persamaannya terletak pada bunyi 'N' mati." },
+                    { word: "كِتَابًا", prompt: "Bagaimana penulisan Tanwin Fathah secara umum di Mushaf?", options: ["Diikuti huruf Alif tambahan (ـًا)", "Ditulis tanpa huruf sama sekali", "Ditulis memakai Nun besar"], correct: "Diikuti huruf Alif tambahan (ـًا)", hint1: "Lihat huruf Alif di akhir kata كِتَابًا.", hint2: "Fathatain umumnya didampingi huruf Alif di akhirnya." },
+                    { word: "مِنْ vs عَنْ", prompt: "Manakah yang merupakan contoh Nun Sukun asli tulisan dan lisan?", options: ["مِنْ (Ada huruf Nun Sukun)", "كِتَابٌ (Tanwin)", "مَاءً (Tanwin)"], correct: "مِنْ (Ada huruf Nun Sukun)", hint1: "Nun sukun tertulis jelas dengan huruf Nun (نْ).", hint2: "Lafaz مِنْ memiliki huruf Nun Sukun asli." }
+                ],
+                detective: [
+                    { word: "رَسُولٌ كَرِيمٌ", prompt: "Temukan bentuk Nun Sukun atau Tanwin pada kata 'Rasulun'!", options: ["Tanwin Dhammadain ( ٌ ) pada huruf Lam", "Nun Sukun asli", "Fathatain"], correct: "Tanwin Dhammadain ( ٌ ) pada huruf Lam", hint1: "Perhatikan harakat di atas huruf Lam (لٌ).", hint2: "Terdapat Tanwin Dhammadain ( ٌ )." },
+                    { word: "مِنْ خَوْفٍ", prompt: "Bentuk apakah yang terdapat pada kata pertama 'Min'?", options: ["Nun Sukun asli (نْ)", "Tanwin Kasratain", "Tanwin Fathatain"], correct: "Nun Sukun asli (نْ)", hint1: "Perhatikan kata مِنْ.", hint2: "Terdiri dari Mim Kasrah + Nun Sukun (نْ)." }
+                ],
+                final: [
+                    { word: "عَلِيمٌ", options: ["TANWIN DHAMMADAIN", "NUN SUKUN ASLI", "FATHATAIN"], correct: "TANWIN DHAMMADAIN", hint1: "Tanwin di atas Mim.", hint2: "Dhammadain." },
+                    { word: "عَنْ", options: ["NUN SUKUN ASLI", "TANWIN KASRATAIN", "TANWIN FATHATAIN"], correct: "NUN SUKUN ASLI", hint1: "Nun berharakat mati.", hint2: "Nun Sukun." },
+                    { word: "قَوْمٍ", options: ["TANWIN KASRATAIN", "NUN SUKUN ASLI", "FATHATAIN"], correct: "TANWIN KASRATAIN", hint1: "Dua garis di bawah.", hint2: "Kasratain." },
+                    { word: "شَيْئًا", options: ["TANWIN FATHATAIN", "NUN SUKUN ASLI", "DHAMMADAIN"], correct: "TANWIN FATHATAIN", hint1: "Dua garis di atas.", hint2: "Fathatain." }
+                ]
+            },
+
+            // CHAPTER 1: IZHAR HALQI
+            1: {
+                letters: [
+                    { word: "مَنْ آمَنَ", prompt: "Manakah huruf Halqi (Izhar) yang bertemu Nun Sukun pada lafaz ini?", options: ["أ (Hamzah)", "م (Mim)", "ن (Nun)"], correct: "أ (Hamzah)", hint1: "Lihat huruf pertama pada kata kedua.", hint2: "Huruf Hamzah (أ) adalah 1 dari 6 huruf Halqi." },
+                    { word: "مِنْ هَادٍ", prompt: "Manakah huruf Izhar Halqi pada lafaz ini?", options: ["هـ (Ha)", "م (Mim)", "د (Dal)"], correct: "هـ (Ha)", hint1: "Huruf Ha (هـ) keluar dari pangkal tenggorokan.", hint2: "Huruf Ha (هـ)." },
+                    { word: "مِنْ عِلْمٍ", prompt: "Manakah huruf Izhar Halqi yang bertemu Nun Sukun?", options: ["ع ('Ain)", "م (Mim)", "ل (Lam)"], correct: "ع ('Ain)", hint1: "Huruf 'Ain ('ع) adalah huruf tenggorokan.", hint2: "Huruf 'Ain (ع)." },
+                    { word: "عَلِيمٌ حَكِيمٌ", prompt: "Huruf Izhar Halqi apakah yang bertemu Tanwin pada kata kedua?", options: ["ح (Ha)", "ع ('Ain)", "م (Mim)"], correct: "ح (Ha)", hint1: "Lihat huruf pertama kata حَكِيمٌ.", hint2: "Huruf Ha (ح)." },
+                    { word: "أَنْعَمْتَ", prompt: "Berapa total jumlah huruf Izhar Halqi?", options: ["6 Huruf (ء, هـ, ع, ح, غ, خ)", "15 Huruf", "4 Huruf"], correct: "6 Huruf (ء, هـ, ع, ح, غ, خ)", hint1: "Huruf yang keluar dari tenggorokan (Halq).", hint2: "Ada 6 Huruf Halqi." }
+                ],
+                rules: [
+                    { word: "مَنْ آمَنَ", prompt: "Bagaimana cara membaca Nun Sukun pada lafaz Izhar Halqi ini?", options: ["🔊 Dibaca Jelas & Tegas Tanpa Dengung", "🌫️ Dibaca Samar", "🔄 Berubah jadi 'M'"], correct: "🔊 Dibaca Jelas & Tegas Tanpa Dengung", hint1: "Izhar secara bahasa artinya JELAS.", hint2: "Dibaca jernih, jelas, dan tidak ditahan berdengung." },
+                    { word: "كُفُوًا أَحَدٌ", prompt: "Bagaimana cara membaca Tanwin bertemu Hamzah pada kata ini?", options: ["🔊 Dibaca 'Kufuwan Ahad' Jelas", "⚡ Dibaca 'Kufuwang Ahad' Samar"], correct: "🔊 Dibaca 'Kufuwan Ahad' Jelas", hint1: "Tanwin bertemu Hamzah (Izhar Halqi).", hint2: "Dibaca jelas tanpa dengung." },
+                    { word: "مِنْ غِلٍّ", prompt: "Di manakah makhraj (tempat keluar) huruf-huruf Izhar Halqi?", options: ["🗣️ Halq / Tenggorokan", "👄 Dua Bibir", "👅 Ujung Lidah"], correct: "🗣️ Halq / Tenggorokan", hint1: "Halqi berasal dari kata Al-Halq.", hint2: "Makhrajnya berada di Tenggorokan." }
+                ],
+                detective: [
+                    { word: "مَنْ آمَنَ", prompt: "Sebab apakah lafaz ini dinamakan Izhar Halqi?", options: ["Nun Sukun (نْ) bertemu huruf Hamzah (أ)", "Nun sukun bertemu Mim", "Tanwin bertemu Ba"], correct: "Nun Sukun (نْ) bertemu huruf Hamzah (أ)", hint1: "Nun sukun bertemu Hamzah.", hint2: "Nun Sukun bertemu Hamzah (أ)." },
+                    { word: "عَلِيمٌ حَكِيمٌ", prompt: "Sebab apakah lafaz ini dinamakan Izhar Halqi?", options: ["Tanwin ( ٌ ) bertemu huruf Ha (ح)", "Tanwin bertemu Ba", "Nun sukun bertemu Ya"], correct: "Tanwin ( ٌ ) bertemu huruf Ha (ح)", hint1: "Tanwin bertemu Ha (ح).", hint2: "Tanwin bertemu Ha (ح)." }
+                ],
+                final: [
+                    { word: "مَنْ آمَنَ", options: ["🔊 IZHAR HALQI", "🔄 IQLAB", "🌫️ IKHFA"], correct: "🔊 IZHAR HALQI", hint1: "Nun sukun bertemu Hamzah.", hint2: "Izhar Halqi." },
+                    { word: "مِنْ هَادٍ", options: ["🔊 IZHAR HALQI", "⚡ IDGHAM BIGHUNNAH", "🌫️ IKHFA"], correct: "🔊 IZHAR HALQI", hint1: "Nun sukun bertemu Ha.", hint2: "Izhar Halqi." },
+                    { word: "مِنْ بَعْدِ", options: ["🔄 IQLAB", "🔊 IZHAR HALQI", "🛡️ IDGHAM BILAGHUNNAH"], correct: "🔄 IQLAB", hint1: "Nun sukun bertemu Ba.", hint2: "Iqlab." },
+                    { word: "عَذَابٌ أَلِيمٌ", options: ["🔊 IZHAR HALQI", "🌫️ IKHFA HAQIQI", "⚡ IDGHAM"], correct: "🔊 IZHAR HALQI", hint1: "Tanwin bertemu Hamzah.", hint2: "Izhar Halqi." }
+                ]
+            },
+
+            // CHAPTER 2: IDGHAM BIGHUNNAH
+            2: {
+                letters: [
+                    { word: "مَنْ يَقُولُ", prompt: "Manakah huruf Idgham Bighunnah pada kata kedua?", options: ["ي (Ya)", "ن (Nun)", "ق (Qaf)"], correct: "ي (Ya)", hint1: "Huruf Ya termasuk rumus YANMU (ي, ن, م, و).", hint2: "Huruf Ya (ي)." },
+                    { word: "مِنْ نِعْمَةٍ", prompt: "Manakah huruf Idgham Bighunnah yang bertemu Nun Sukun?", options: ["ن (Nun)", "م (Mim)", "ع ('Ain)"], correct: "ن (Nun)", hint1: "Nun sukun bertemu huruf Nun.", hint2: "Huruf Nun (ن)." },
+                    { word: "مِنْ مَالٍ", prompt: "Manakah huruf Idgham Bighunnah pada lafaz ini?", options: ["م (Mim)", "ن (Nun)", "ل (Lam)"], correct: "م (Mim)", hint1: "Nun sukun bertemu Mim.", hint2: "Huruf Mim (م)." },
+                    { word: "مِنْ وَالٍ", prompt: "Apa rumus gabungan 4 huruf Idgham Bighunnah?", options: ["يَنْمُو (YANMU)", "يَرْمَلُونَ", "أَخِي هَاجَ"], correct: "يَنْمُو (YANMU)", hint1: "Ya, Nun, Mim, Wawu disingkat YANMU.", hint2: "Rumus: YANMU (يَنْمُو)." }
+                ],
+                rules: [
+                    { word: "مَنْ يَقُولُ", prompt: "Bagaimana cara membaca Idgham Bighunnah pada lafaz ini?", options: ["⚡ Lebur Masuk ke Huruf Ya + Dengung 2 Harakat (May-yaqulu)", "🔊 Dibaca 'Man yaqulu' Jelas", "🔄 Dibaca 'Mam yaqulu'"], correct: "⚡ Lebur Masuk ke Huruf Ya + Dengung 2 Harakat (May-yaqulu)", hint1: "Idgham artinya memasukkan/meleburkan bunyi N.", hint2: "Dibaca melebur dengan dengung (Bighunnah)." },
+                    { word: "مِنْ وَالٍ", prompt: "Bagaimana bunyi pengucapan lafaz ini yang benar?", options: ["⚡ Dibaca 'Miw-walin'", "🔊 Dibaca 'Min-walin'"], correct: "⚡ Dibaca 'Miw-walin'", hint1: "Bunyi N hilang melebur sempurna ke Wawu.", hint2: "Dibaca 'Miw-walin'." },
+                    { word: "خَيْرًا يَرَهُ", prompt: "Berapa harakat durasi dengung (Ghunnah) saat membaca Idgham Bighunnah?", options: ["⏱️ 2 Harakat (Ditahan Sejenak)", "⏱️ Tanpa Harakat (Langsung Cepat)"], correct: "⏱️ 2 Harakat (Ditahan Sejenak)", hint1: "Tahan dengung di rongga hidung sejenak.", hint2: "2 Harakat." }
+                ],
+                detective: [
+                    { word: "مَنْ يَقُولُ", prompt: "Sebab apakah lafaz ini dinamakan Idgham Bighunnah?", options: ["Nun Sukun (نْ) bertemu huruf Ya (ي) dalam 2 kata", "Nun sukun bertemu Mim dalam 1 kata", "Tanwin bertemu Ra"], correct: "Nun Sukun (نْ) bertemu huruf Ya (ي) dalam 2 kata", hint1: "Nun sukun bertemu Ya.", hint2: "Nun Sukun bertemu Ya dalam 2 kata." },
+                    { word: "خَيْرٌ يَرَهُ", prompt: "Sebab apakah lafaz ini dinamakan Idgham Bighunnah?", options: ["Tanwin ( ٌ ) bertemu huruf Ya (ي)", "Tanwin bertemu Ra", "Nun sukun bertemu Ha"], correct: "Tanwin ( ٌ ) bertemu huruf Ya (ي)", hint1: "Tanwin bertemu Ya.", hint2: "Tanwin bertemu Ya (ي)." }
+                ],
+                final: [
+                    { word: "مَنْ يَقُولُ", options: ["⚡ IDGHAM BIGHUNNAH", "🌫️ IKHFA HAQIQI", "🔊 IZHAR HALQI"], correct: "⚡ IDGHAM BIGHUNNAH", hint1: "Nun sukun bertemu Ya.", hint2: "Idgham Bighunnah." },
+                    { word: "مِنْ وَالٍ", options: ["⚡ IDGHAM BIGHUNNAH", "🛡️ IDGHAM BILAGHUNNAH", "🔄 IQLAB"], correct: "⚡ IDGHAM BIGHUNNAH", hint1: "Nun sukun bertemu Wawu.", hint2: "Idgham Bighunnah." },
+                    { word: "مِنْ لَدُنْهُ", options: ["⚡ IDGHAM BIGHUNNAH", "🛡️ IDGHAM BILAGHUNNAH", "🔊 IZHAR HALQI"], correct: "🛡️ IDGHAM BILAGHUNNAH", hint1: "Nun sukun bertemu Lam.", hint2: "Idgham Bilaghunnah." },
+                    { word: "مِنْ مَالٍ", options: ["⚡ IDGHAM BIGHUNNAH", "🌫️ IKHFA HAQIQI", "🔄 IQLAB"], correct: "⚡ IDGHAM BIGHUNNAH", hint1: "Nun sukun bertemu Mim.", hint2: "Idgham Bighunnah." }
+                ]
+            },
+
+            // CHAPTER 3: IDGHAM BILAGHUNNAH
+            3: {
+                letters: [
+                    { word: "مِنْ لَدُنْهُ", prompt: "Manakah huruf Idgham Bilaghunnah pada lafaz ini?", options: ["ل (Lam)", "د (Dal)", "ن (Nun)"], correct: "ل (Lam)", hint1: "Huruf Idgham Bilaghunnah hanya 2: Lam & Ra.", hint2: "Huruf Lam (ل)." },
+                    { word: "مِنْ رَبِّهِمْ", prompt: "Manakah huruf Idgham Bilaghunnah yang bertemu Nun Sukun?", options: ["ر (Ra)", "ب (Ba)", "هـ (Ha)"], correct: "ر (Ra)", hint1: "Nun sukun bertemu Ra.", hint2: "Huruf Ra (ر)." },
+                    { word: "غَفُورٌ رَحِيمٌ", prompt: "Berapa total huruf Idgham Bilaghunnah?", options: ["2 Huruf (ل , ر)", "4 Huruf", "15 Huruf"], correct: "2 Huruf (ل , ر)", hint1: "Hanya Lam dan Ra.", hint2: "2 Huruf (Lam & Ra)." }
+                ],
+                rules: [
+                    { word: "مِنْ لَدُنْهُ", prompt: "Bagaimana cara membaca Idgham Bilaghunnah pada lafaz ini?", options: ["🛡️ Lebur Masuk TANPA Dengung (Mil-ladunhu)", "⚡ Lebur Masuk DENGAN Dengung (Minng-ladunhu)", "🔊 Dibaca Jelas (Min-ladunhu)"], correct: "🛡️ Lebur Masuk TANPA Dengung (Mil-ladunhu)", hint1: "Bilaghunnah artinya TANPA DENGUNG.", hint2: "Bunyi N hilang melebur ke Lam secara tegas tanpa dengung." },
+                    { word: "مِنْ رَبِّهِمْ", prompt: "Bagaimana pengucapan lafaz ini yang benar?", options: ["🛡️ Dibaca 'Mir-rabbihim' (Tanpa Dengung)", "🔊 Dibaca 'Min-rabbihim'"], correct: "🛡️ Dibaca 'Mir-rabbihim' (Tanpa Dengung)", hint1: "Nun sukun masuk ke Ra tanpa ditahan dengung.", hint2: "Dibaca 'Mir-rabbihim'." },
+                    { word: "فَعَّالٌ لِمَا يُرِيدُ", prompt: "Bagaimana cara membaca Tanwin bertemu Lam ini?", options: ["🛡️ Dibaca 'Fa' 'alul-lima' (Tanpa Dengung)", "⚡ Dibaca 'Fa' 'alum-lima'"], correct: "🛡️ Dibaca 'Fa' 'alul-lima' (Tanpa Dengung)", hint1: "Tanwin bertemu Lam.", hint2: "Lebur tanpa dengung." }
+                ],
+                detective: [
+                    { word: "مِنْ لَدُنْهُ", prompt: "Sebab apakah lafaz ini dinamakan Idgham Bilaghunnah?", options: ["Nun Sukun (نْ) bertemu huruf Lam (ل)", "Nun sukun bertemu Dal", "Tanwin bertemu Mim"], correct: "Nun Sukun (نْ) bertemu huruf Lam (ل)", hint1: "Nun sukun bertemu Lam.", hint2: "Nun Sukun (نْ) bertemu Lam (ل)." },
+                    { word: "مِنْ رَبِّهِمْ", prompt: "Sebab apakah lafaz ini dinamakan Idgham Bilaghunnah?", options: ["Nun Sukun (نْ) bertemu huruf Ra (ر)", "Nun sukun bertemu Ba", "Tanwin bertemu Ra"], correct: "Nun Sukun (نْ) bertemu huruf Ra (ر)", hint1: "Nun sukun bertemu Ra.", hint2: "Nun Sukun (نْ) bertemu Ra (ر)." }
+                ],
+                final: [
+                    { word: "مِنْ لَدُنْهُ", options: ["🛡️ IDGHAM BILAGHUNNAH", "⚡ IDGHAM BIGHUNNAH", "🔊 IZHAR HALQI"], correct: "🛡️ IDGHAM BILAGHUNNAH", hint1: "Nun sukun bertemu Lam.", hint2: "Idgham Bilaghunnah." },
+                    { word: "مِنْ رَبِّهِمْ", options: ["🛡️ IDGHAM BILAGHUNNAH", "🔄 IQLAB", "🌫️ IKHFA HAQIQI"], correct: "🛡️ IDGHAM BILAGHUNNAH", hint1: "Nun sukun bertemu Ra.", hint2: "Idgham Bilaghunnah." },
+                    { word: "مِنْ بَعْدِ", options: ["🔄 IQLAB", "🛡️ IDGHAM BILAGHUNNAH", "🔊 IZHAR HALQI"], correct: "🔄 IQLAB", hint1: "Nun sukun bertemu Ba.", hint2: "Iqlab." },
+                    { word: "عَلِيمٌ حَكِيمٌ", options: ["🔊 IZHAR HALQI", "🛡️ IDGHAM BILAGHUNNAH", "⚡ IDGHAM BIGHUNNAH"], correct: "🔊 IZHAR HALQI", hint1: "Tanwin bertemu Ha.", hint2: "Izhar Halqi." }
+                ]
+            },
+
+            // CHAPTER 4: HUKUM IQLAB
+            4: {
+                letters: [
+                    { word: "مِنْ بَعْدِ", prompt: "Manakah huruf yang menyebabkan hukum Iqlab pada kata ini?", options: ["ب (Ba)", "م (Mim)", "ن (Nun)"], correct: "ب (Ba)", hint1: "Perhatikan huruf yang muncul tepat setelah Nun sukun (نْ).", hint2: "Huruf Iqlab hanya ada 1 huruf, yaitu Ba (ب)." },
+                    { word: "أَنْبِئْهُمْ", prompt: "Manakah huruf Iqlab dalam satu kata berikut?", options: ["ب (Ba)", "أ (Hamzah)", "ن (Nun)"], correct: "ب (Ba)", hint1: "Lihat huruf setelah Nun sukun di dalam kata tersebut.", hint2: "Huruf Ba (ب) bertemu Nun sukun." },
+                    { word: "سَمِيعٌ بَصِيرٌ", prompt: "Tanda khusus apakah yang terdapat pada Tanwin sebelum huruf Ba (ب)?", options: ["Mim kecil (م)", "Sukun bulat (ْ)", "Tasydid (ّ)"], correct: "Mim kecil (م)", hint1: "Lihat tanda kecil di atas harakat tanwin.", hint2: "Tanda Mim kecil (م) menunjukkan terjadinya Iqlab." },
+                    { word: "كِرَامٍ بَرَرَةٍ", prompt: "Mengapa kata ini dinamakan hukum Iqlab?", options: ["Tanwin ( ٍ ) bertemu huruf Ba (ب)", "Tanwin bertemu huruf Ra (ر)", "Nun sukun bertemu Mim (م)"], correct: "Tanwin ( ٍ ) bertemu huruf Ba (ب)", hint1: "Perhatikan harakat kasratain di bawah huruf Mim bertemu Ba.", hint2: "Tanwin bertemu huruf Ba (ب)." },
+                    { word: "عَلِيمٌ بِذَاتِ الصُّدُورِ", prompt: "Huruf apakah yang memicu pembacaan Iqlab pada kata ini?", options: ["ب (Ba)", "ذ (Zal)", "ص (Sad)"], correct: "ب (Ba)", hint1: "Lihat huruf pertama pada kata kedua.", hint2: "Huruf Ba (ب)." }
+                ],
+                rules: [
+                    { word: "مِنْ بَعْدِ", prompt: "Bagaimana cara membaca bunyi Nun Sukun (نْ) pada lafaz ini?", options: ["🔄 Berubah jadi 'M' + Dengung (Mimba'di)", "🔊 Dibaca 'N' Jelas (Min ba'di)", "🌫️ Dibaca Samar (Minng ba'di)"], correct: "🔄 Berubah jadi 'M' + Dengung (Mimba'di)", hint1: "Iqlab secara bahasa artinya Menukar / Mengganti.", hint2: "Bunyi 'N' diganti menjadi bunyi 'M' berserta dengung (Ghunnah)." },
+                    { word: "سَمِيعٌ بَصِيرٌ", prompt: "Bagaimana cara membaca Tanwin pada lafaz ini?", options: ["🔄 Dibaca 'Sami'um Basir' (Bunyi 'M' + Dengung)", "🔊 Dibaca 'Sami'un Basir' (Bunyi 'N' Jelas)"], correct: "🔄 Dibaca 'Sami'um Basir' (Bunyi 'M' + Dengung)", hint1: "Tanwin bertemu huruf Ba (ب).", hint2: "Iqlab: Berubah jadi 'M' berdengung." },
+                    { word: "كِرَامٍ بَرَرَةٍ", prompt: "Berapa harakat durasi dengung (Ghunnah) saat membaca Iqlab?", options: ["⏱️ 2 Harakat (Ditahan Sejenak)", "⏱️ Tanpa Harakat (Langsung Cepat)"], correct: "⏱️ 2 Harakat (Ditahan Sejenak)", hint1: "Saat bunyi N berubah jadi M, tahan suaranya di rongga hidung.", hint2: "Dengungkan sepanjang 2 harakat." },
+                    { word: "مِنْ بَيْنِ", prompt: "Bagaimana posisi kedua bibir saat membaca Iqlab?", options: ["👄 Merapat Ringan Tanpa Penekanan Keras", "👄 Terbuka Lebar"], correct: "👄 Merapat Ringan Tanpa Penekanan Keras", hint1: "Bunyi Mim (M) diucapkan dengan merapatkan dua bibir secara halus.", hint2: "Rapatkan bibir dengan ringan dan lembut." }
+                ],
+                detective: [
+                    { word: "مِنْ بَعْدِ", prompt: "Mengapa kata ini dinamakan Hukum Iqlab?", options: ["Nun Sukun (نْ) bertemu huruf Ba (ب)", "Nun Sukun bertemu huruf Mim (م)", "Tanwin bertemu huruf Ba (ب)"], correct: "Nun Sukun (نْ) bertemu huruf Ba (ب)", hint1: "Perhatikan huruf Nun sukun bertemu kata berikutnya.", hint2: "Sebab: Nun Sukun (نْ) bertemu huruf Ba (ب)." },
+                    { word: "سَمِيعٌ بَصِيرٌ", prompt: "Mengapa kata ini dinamakan Hukum Iqlab?", options: ["Tanwin ( ٌ ) bertemu huruf Ba (ب)", "Tanwin bertemu huruf Shad (ص)", "Nun Sukun bertemu Mim (م)"], correct: "Tanwin ( ٌ ) bertemu huruf Ba (ب)", hint1: "Perhatikan harakat dhammadain.", hint2: "Sebab: Tanwin ( ٌ ) bertemu huruf Ba (ب)." },
+                    { word: "أَنْبِئْهُمْ", prompt: "Apakah Iqlab dapat terjadi dalam satu kata?", options: ["YA, Nun sukun & Ba berada dalam 1 kata", "TIDAK, Iqlab wajib 2 kata"], correct: "YA, Nun sukun & Ba berada dalam 1 kata", hint1: "Lihat kata أَنْبِئْهُمْ.", hint2: "Iqlab bisa terjadi dalam 1 kata maupun 2 kata." }
+                ],
+                final: [
+                    { word: "مِنْ بَعْدِ", options: ["🔄 IQLAB", "🔊 IZHAR HALQI", "🌫️ IKHFA"], correct: "🔄 IQLAB", hint1: "Nun sukun bertemu Ba.", hint2: "Iqlab." },
+                    { word: "مِنْ هَادٍ", options: ["🔄 IQLAB", "🔊 IZHAR HALQI", "🌫️ IDGHAM"], correct: "🔊 IZHAR HALQI", hint1: "Nun sukun bertemu Ha (هـ).", hint2: "Izhar Halqi." },
+                    { word: "سَمِيعٌ بَصِيرٌ", options: ["🔄 IQLAB", "🔊 IZHAR HALQI", "🌫️ IKHFA"], correct: "🔄 IQLAB", hint1: "Tanwin bertemu Ba.", hint2: "Iqlab." },
+                    { word: "أَنْبِئْهُمْ", options: ["🔄 IQLAB", "🔊 IZHAR HALQI", "🌫️ IDGHAM"], correct: "🔄 IQLAB", hint1: "Nun sukun bertemu Ba.", hint2: "Iqlab." }
+                ]
+            },
+
+            // CHAPTER 5: IKHFA HAQIQI
+            5: {
+                letters: [
+                    { word: "مِنْ دُونِ", prompt: "Manakah huruf Ikhfa Haqiqi pada lafaz ini?", options: ["د (Dal)", "ن (Nun)", "م (Mim)"], correct: "د (Dal)", hint1: "Huruf Dal (د) adalah 1 dari 15 huruf Ikhfa.", hint2: "Nun sukun bertemu Dal (د)." },
+                    { word: "عَنْ صَلَاتِهِمْ", prompt: "Manakah huruf yang menyebabkan hukum Ikhfa Haqiqi pada lafaz ini?", options: ["ص (Sad)", "ع ('Ain)", "ل (Lam)"], correct: "ص (Sad)", hint1: "Lihat huruf setelah Nun sukun.", hint2: "Huruf Sad (ص)." },
+                    { word: "مَاءً ثَجَّاجًا", prompt: "Manakah huruf Ikhfa Haqiqi yang bertemu Tanwin?", options: ["ث (Tha)", "ج (Jim)", "م (Mim)"], correct: "ث (Tha)", hint1: "Tanwin bertemu huruf Tha (ث).", hint2: "Huruf Tha (ث)." },
+                    { word: "مِنْ قَبْلُ", prompt: "Manakah huruf Ikhfa Haqiqi tebal (Tafkhim) pada lafaz ini?", options: ["ق (Qaf)", "ن (Nun)", "ب (Ba)"], correct: "ق (Qaf)", hint1: "Qaf adalah huruf pangkal lidah yang tebal.", hint2: "Huruf Qaf (ق)." },
+                    { word: "إِنْ كَانَ", prompt: "Berapa total jumlah huruf Ikhfa Haqiqi?", options: ["15 Huruf", "6 Huruf", "4 Huruf"], correct: "15 Huruf", hint1: "Ikhfa adalah hukum paling banyak hurufnya.", hint2: "Ada 15 huruf Ikhfa Haqiqi." }
+                ],
+                rules: [
+                    { word: "مِنْ دُونِ", prompt: "Bagaimana cara membaca Nun Sukun pada lafaz Ikhfa Haqiqi ini?", options: ["🌫️ Dibaca Samar + Dengung 2 Harakat", "🔊 Dibaca Jelas & Tegas", "🔄 Dibaca Menjadi 'M'"], correct: "🌫️ Dibaca Samar + Dengung 2 Harakat", hint1: "Ikhfa artinya menyamarkan bunyi N.", hint2: "Membaca samar antara Izhar dan Idgham dengan dengung." },
+                    { word: "مِنْ قَبْلُ", prompt: "Bagaimana sifat dengung Ikhfa pada huruf Qaf (ق)?", options: ["🔊 Dengung Tebal (Tafkhim)", "🔉 Dengung Tipis (Tarqiq)"], correct: "🔊 Dengung Tebal (Tafkhim)", hint1: "Qaf adalah huruf isti'la (tebal).", hint2: "Dengung Ikhfa dibaca tebal (Tafkhim)." },
+                    { word: "إِنْ كَانَ", prompt: "Bagaimana posisi lidah saat membaca Ikhfa Haqiqi?", options: ["👅 Lidah Diangkat Mendekati Makhraj Huruf Berikutnya", "👄 Bibir Dirapatkan Rapat"], correct: "👅 Lidah Diangkat Mendekati Makhraj Huruf Berikutnya", hint1: "Siapkan makhraj huruf setelah N.", hint2: "Lidah siap menuju huruf Ikhfa." }
+                ],
+                detective: [
+                    { word: "مِنْ دُونِ", prompt: "Sebab apakah lafaz ini dinamakan Ikhfa Haqiqi?", options: ["Nun Sukun (نْ) bertemu huruf Dal (د)", "Nun Sukun bertemu Ba", "Tanwin bertemu Ra"], correct: "Nun Sukun (نْ) bertemu huruf Dal (د)", hint1: "Lihat huruf Dal setelah Nun sukun.", hint2: "Nun Sukun bertemu Dal (د)." },
+                    { word: "مَاءً ثَجَّاجًا", prompt: "Sebab apakah lafaz ini dinamakan Ikhfa Haqiqi?", options: ["Tanwin ( ً ) bertemu huruf Tha (ث)", "Tanwin bertemu Mim", "Nun sukun bertemu Jim"], correct: "Tanwin ( ً ) bertemu huruf Tha (ث)", hint1: "Tanwin bertemu Tha.", hint2: "Tanwin ( ً ) bertemu Tha (ث)." }
+                ],
+                final: [
+                    { word: "مِنْ دُونِ", options: ["🌫️ IKHFA HAQIQI", "🔊 IZHAR HALQI", "🔄 IQLAB"], correct: "🌫️ IKHFA HAQIQI", hint1: "Nun sukun bertemu Dal.", hint2: "Ikhfa Haqiqi." },
+                    { word: "عَنْ صَلَاتِهِمْ", options: ["🌫️ IKHFA HAQIQI", "⚡ IDGHAM BIGHUNNAH", "🔄 IQLAB"], correct: "🌫️ IKHFA HAQIQI", hint1: "Nun sukun bertemu Sad.", hint2: "Ikhfa Haqiqi." },
+                    { word: "مِنْ بَعْدِ", options: ["🌫️ IKHFA HAQIQI", "🔄 IQLAB", "🔊 IZHAR HALQI"], correct: "🔄 IQLAB", hint1: "Nun sukun bertemu Ba.", hint2: "Iqlab." },
+                    { word: "مِنْ غِلٍّ", options: ["🌫️ IKHFA HAQIQI", "🔊 IZHAR HALQI", "🛡️ IDGHAM BILAGHUNNAH"], correct: "🔊 IZHAR HALQI", hint1: "Nun sukun bertemu Ghain.", hint2: "Izhar Halqi." }
+                ]
+            },
+
+            // CHAPTER 6: IZHAR MUTLAQ (PENGECUALIAN 1 KATA)
+            6: {
+                letters: [
+                    { word: "الدُّنْيَا", prompt: "Huruf manakah yang bertemu Nun Sukun dalam 1 KATA ini?", options: ["ي (Ya)", "ن (Nun)", "د (Dal)"], correct: "ي (Ya)", hint1: "Lihat huruf tepat setelah Nun sukun.", hint2: "Huruf Ya (ي)." },
+                    { word: "بُنْيَانٌ", prompt: "Apakah nama hukum tajwid pada kata 'Bunyanun'?", options: ["🚨 Izhar Mutlaq (Wajib Jelas)", "⚡ Idgham Bighunnah", "🌫️ Ikhfa Haqiqi"], correct: "🚨 Izhar Mutlaq (Wajib Jelas)", hint1: "Nun sukun & Ya berada dalam 1 KATA terpadu.", hint2: "Izhar Mutlaq." },
+                    { word: "صِنْوَانٌ", prompt: "Huruf apakah yang bertemu Nun Sukun pada kata 'Sinwanun'?", options: ["و (Wawu)", "ن (Nun)", "ص (Sad)"], correct: "و (Wawu)", hint1: "Nun sukun bertemu Wawu.", hint2: "Huruf Wawu (و)." },
+                    { word: "قِنْوَانٌ", prompt: "Berapa jumlah kata dalam Al-Qur'an yang mengalami Izhar Mutlaq ini?", options: ["4 Kata (Ad-Dunya, Bunyan, Sinwan, Qinwan)", "10 Kata", "1 Kata Saja"], correct: "4 Kata (Ad-Dunya, Bunyan, Sinwan, Qinwan)", hint1: "Hanya terdapat pada 4 kata khusus di Al-Qur'an.", hint2: "4 Kata Khusus." }
+                ],
+                rules: [
+                    { word: "الدُّنْيَا", prompt: "Mengapa kata 'Ad-Dunya' TIDAK dibaca Idgham Bighunnah (Ad-Duya)?", options: ["❌ Karena Nun Sukun & Ya berada dalam SATU KATA", "❌ Karena huruf Dhal tebal"], correct: "❌ Karena Nun Sukun & Ya berada dalam SATU KATA", hint1: "Syarat Idgham Bighunnah harus terjadi dalam 2 KATA terpisah.", hint2: "Jika dalam 1 kata, wajib dibaca JELAS (Izhar Mutlaq)." },
+                    { word: "بُنْيَانٌ", prompt: "Bagaimana cara membaca kata 'Bunyanun' yang benar?", options: ["🔊 Dibaca JELAS 'Bun-ya-nun'", "⚡ Dibaca Lebur 'Buy-ya-nun'"], correct: "🔊 Dibaca JELAS 'Bun-ya-nun'", hint1: "Izhar Mutlaq dibaca jelas tanpa dileburkan.", hint2: "Dibaca 'Bun-ya-nun'." },
+                    { word: "صِنْوَانٌ", prompt: "Bagaimana jika kata 'Sinwanun' dibaca Idgham (Siwwanun)?", options: ["⚠️ Rusak Makna / Salah Fatal", "Boleh-boleh saja"], correct: "⚠️ Rusak Makna / Salah Fatal", hint1: "Peleburan dalam 1 kata merusak struktur arti kata.", hint2: "Akan mengubah arti kata asli." }
+                ],
+                detective: [
+                    { word: "الدُّنْيَا", prompt: "Deteksi sebab tajwid: Mengapa lafaz ini dinamakan Izhar Mutlaq?", options: ["Nun Sukun (نْ) bertemu Ya (ي) dalam 1 KATA", "Nun sukun bertemu Dal", "Tanwin bertemu Ya"], correct: "Nun Sukun (نْ) bertemu Ya (ي) dalam 1 KATA", hint1: "Nun sukun dan Ya berada dalam 1 kata terpadu.", hint2: "Sebab: Nun Sukun bertemu Ya dalam 1 kata." },
+                    { word: "مَنْ يَقُولُ vs الدُّنْيَا", prompt: "Manakah yang dibaca IDGHAM BIGHUNNAH?", options: ["مَنْ يَقُولُ (2 Kata Terpisah)", "الدُّنْيَا (1 Kata)"], correct: "مَنْ يَقُولُ (2 Kata Terpisah)", hint1: "Idgham Bighunnah wajib terjadi pada 2 kata terpisah.", hint2: "مَنْ يَقُولُ." }
+                ],
+                final: [
+                    { word: "الدُّنْيَا", options: ["🚨 IZHAR MUTLAQ", "⚡ IDGHAM BIGHUNNAH", "🌫️ IKHFA"], correct: "🚨 IZHAR MUTLAQ", hint1: "1 kata.", hint2: "Izhar Mutlaq." },
+                    { word: "بُنْيَانٌ", options: ["🚨 IZHAR MUTLAQ", "⚡ IDGHAM BIGHUNNAH", "🔄 IQLAB"], correct: "🚨 IZHAR MUTLAQ", hint1: "1 kata.", hint2: "Izhar Mutlaq." },
+                    { word: "مَنْ يَقُولُ", options: ["⚡ IDGHAM BIGHUNNAH", "🚨 IZHAR MUTLAQ", "🔊 IZHAR HALQI"], correct: "⚡ IDGHAM BIGHUNNAH", hint1: "2 kata terpisah.", hint2: "Idgham Bighunnah." },
+                    { word: "قِنْوَانٌ", options: ["🚨 IZHAR MUTLAQ", "🛡️ IDGHAM BILAGHUNNAH", "🌫️ IKHFA"], correct: "🚨 IZHAR MUTLAQ", hint1: "1 kata.", hint2: "Izhar Mutlaq." }
+                ]
+            },
+
+            // CHAPTER 7: SIMULASI TAKTIS TERPADU
+            7: {
+                letters: [
+                    { word: "مِنْ غِلٍّ", prompt: "Hukum apakah yang terjadi pada Nun Sukun bertemu Ghain ini?", options: ["🔊 IZHAR HALQI", "🌫️ IKHFA HAQIQI", "🔄 IQLAB"], correct: "🔊 IZHAR HALQI", hint1: "Ghain adalah 1 dari 6 huruf Halqi.", hint2: "Izhar Halqi." },
+                    { word: "مِنْ شَرِّ", prompt: "Hukum apakah yang terjadi pada Nun Sukun bertemu Syin ini?", options: ["🌫️ IKHFA HAQIQI", "⚡ IDGHAM BIGHUNNAH", "🔊 IZHAR HALQI"], correct: "🌫️ IKHFA HAQIQI", hint1: "Syin termasuk 15 huruf Ikhfa.", hint2: "Ikhfa Haqiqi." },
+                    { word: "مِنْ رَبِّهِمْ", prompt: "Hukum apakah yang terjadi pada Nun Sukun bertemu Ra ini?", options: ["🛡️ IDGHAM BILAGHUNNAH", "⚡ IDGHAM BIGHUNNAH", "🔄 IQLAB"], correct: "🛡️ IDGHAM BILAGHUNNAH", hint1: "Ra dibaca masuk tanpa dengung.", hint2: "Idgham Bilaghunnah." },
+                    { word: "مِنْ بَعْدِ", prompt: "Hukum apakah yang terjadi pada Nun Sukun bertemu Ba ini?", options: ["🔄 IQLAB", "🔊 IZHAR HALQI", "⚡ IDGHAM BIGHUNNAH"], correct: "🔄 IQLAB", hint1: "Berubah suara M.", hint2: "Iqlab." }
+                ],
+                rules: [
+                    { word: "مِنْ مَالٍ", prompt: "Bagaimana cara membaca Nun Sukun bertemu Mim ini?", options: ["⚡ Lebur Masuk + Dengung 2 Harakat (Mim-malin)", "🔊 Dibaca Jelas (Min-malin)"], correct: "⚡ Lebur Masuk + Dengung 2 Harakat (Mim-malin)", hint1: "Mim huruf YANMU.", hint2: "Idgham Bighunnah." },
+                    { word: "كُفُوًا أَحَدٌ", prompt: "Bagaimana cara membaca Tanwin bertemu Hamzah ini?", options: ["🔊 Dibaca Jelas 'Kufuwan Ahad' Tanpa Dengung", "🌫️ Dibaca Samar 'Kufuwang Ahad'"], correct: "🔊 Dibaca Jelas 'Kufuwan Ahad' Tanpa Dengung", hint1: "Hamzah huruf Halqi.", hint2: "Izhar Halqi." },
+                    { word: "مِنْ لَدُنْهُ", prompt: "Bagaimana cara membaca Nun Sukun bertemu Lam ini?", options: ["🛡️ Dibaca 'Mil-ladunhu' Tanpa Dengung", "⚡ Dibaca 'Minng-ladunhu'"], correct: "🛡️ Dibaca 'Mil-ladunhu' Tanpa Dengung", hint1: "Lam huruf Idgham Bilaghunnah.", hint2: "Idgham Bilaghunnah." }
+                ],
+                detective: [
+                    { word: "سَمِيعٌ بَصِيرٌ", prompt: "Sebab hukum tajwid pada lafaz ini adalah:", options: ["Tanwin ( ٌ ) bertemu Ba (ب) -> Hukum Iqlab", "Tanwin bertemu Sad -> Ikhfa Haqiqi"], correct: "Tanwin ( ٌ ) bertemu Ba (ب) -> Hukum Iqlab", hint1: "Tanwin bertemu Ba.", hint2: "Iqlab." },
+                    { word: "مِنْ دُونِ", prompt: "Sebab hukum tajwid pada lafaz ini adalah:", options: ["Nun Sukun (نْ) bertemu Dal (د) -> Ikhfa Haqiqi", "Nun sukun bertemu Dal -> Izhar Halqi"], correct: "Nun Sukun (نْ) bertemu Dal (د) -> Ikhfa Haqiqi", hint1: "Nun sukun bertemu Dal.", hint2: "Ikhfa Haqiqi." }
+                ],
+                final: [
+                    { word: "مِنْ هَادٍ", options: ["🔊 IZHAR HALQI", "🔄 IQLAB", "🌫️ IKHFA HAQIQI"], correct: "🔊 IZHAR HALQI", hint1: "Izhar Halqi.", hint2: "Izhar Halqi." },
+                    { word: "مِنْ وَالٍ", options: ["⚡ IDGHAM BIGHUNNAH", "🛡️ IDGHAM BILAGHUNNAH", "🔊 IZHAR HALQI"], correct: "⚡ IDGHAM BIGHUNNAH", hint1: "Idgham Bighunnah.", hint2: "Idgham Bighunnah." },
+                    { word: "مِنْ لَدُنْهُ", options: ["🛡️ IDGHAM BILAGHUNNAH", "⚡ IDGHAM BIGHUNNAH", "🔄 IQLAB"], correct: "🛡️ IDGHAM BILAGHUNNAH", hint1: "Idgham Bilaghunnah.", hint2: "Idgham Bilaghunnah." },
+                    { word: "مِنْ بَعْدِ", options: ["🔄 IQLAB", "🔊 IZHAR HALQI", "🌫️ IKHFA HAQIQI"], correct: "🔄 IQLAB", hint1: "Iqlab.", hint2: "Iqlab." }
+                ]
+            },
+
+            // CHAPTER 8 / GRAND FINAL TOURNAMENT: ALL NUN SUKUN & TANWIN LAWS
+            8: {
+                letters: [
+                    { word: "مَنْ آمَنَ", prompt: "Hukum apakah yang terjadi pada Nun Sukun bertemu Hamzah ini?", options: ["🔊 IZHAR HALQI", "🔄 IQLAB", "🌫️ IKHFA HAQIQI"], correct: "🔊 IZHAR HALQI", hint1: "Hamzah adalah 1 dari 6 huruf halqi (tenggorokan).", hint2: "Izhar Halqi (Dibaca Jelas)." },
+                    { word: "مِنْ بَعْدِ", prompt: "Hukum apakah yang terjadi pada Nun Sukun bertemu Ba ini?", options: ["🔄 IQLAB", "⚡ IDGHAM BIGHUNNAH", "🌫️ IKHFA HAQIQI"], correct: "🔄 IQLAB", hint1: "Pertukaran bunyi N jadi M.", hint2: "Iqlab." },
+                    { word: "مِنْ دُونِ", prompt: "Hukum apakah yang terjadi pada Nun Sukun bertemu Dal ini?", options: ["🌫️ IKHFA HAQIQI", "🛡️ IDGHAM BILAGHUNNAH", "🔊 IZHAR HALQI"], correct: "🌫️ IKHFA HAQIQI", hint1: "Dal termasuk 15 huruf Ikhfa.", hint2: "Ikhfa Haqiqi." },
+                    { word: "مَنْ يَقُولُ", prompt: "Hukum apakah yang terjadi pada Nun Sukun bertemu Ya ini?", options: ["⚡ IDGHAM BIGHUNNAH", "🛡️ IDGHAM BILAGHUNNAH", "🔄 IQLAB"], correct: "⚡ IDGHAM BIGHUNNAH", hint1: "Ya termasuk rumus YANMU.", hint2: "Idgham Bighunnah." },
+                    { word: "مِنْ رَبِّهِمْ", prompt: "Hukum apakah yang terjadi pada Nun Sukun bertemu Ra ini?", options: ["🛡️ IDGHAM BILAGHUNNAH", "⚡ IDGHAM BIGHUNNAH", "🔊 IZHAR HALQI"], correct: "🛡️ IDGHAM BILAGHUNNAH", hint1: "Ra dibaca masuk tanpa dengung.", hint2: "Idgham Bilaghunnah." },
+                    { word: "الدُّنْيَا", prompt: "Hukum khusus apakah pada kata Nun Sukun bertemu Ya dalam 1 kata ini?", options: ["🚨 IZHAR MUTLAQ", "⚡ IDGHAM BIGHUNNAH", "🌫️ IKHFA HAQIQI"], correct: "🚨 IZHAR MUTLAQ", hint1: "Berada dalam 1 kata terpadu.", hint2: "Izhar Mutlaq." }
+                ],
+                rules: [
+                    { word: "مِنْ حَكِيمٍ", prompt: "Bagaimana cara membaca lafaz Izhar Halqi ini?", options: ["🔊 Dibaca Jelas & Tegas Tanpa Dengung", "🌫️ Dibaca Samar", "⚡ Dibaca Lebur"], correct: "🔊 Dibaca Jelas & Tegas Tanpa Dengung", hint1: "Izhar artinya JELAS.", hint2: "Dibaca jelas tanpa dengung." },
+                    { word: "سَمِيعٌ بَصِيرٌ", prompt: "Bagaimana cara membaca lafaz Iqlab ini?", options: ["🔄 Berubah Bunyi 'M' + Dengung 2 Harakat", "🔊 Dibaca Jelas 'N'"], correct: "🔄 Berubah Bunyi 'M' + Dengung 2 Harakat", hint1: "Tanwin bertemu Ba.", hint2: "Iqlab: Berubah jadi M berdengung." },
+                    { word: "مِنْ كَانَ", prompt: "Bagaimana cara membaca lafaz Ikhfa Haqiqi ini?", options: ["🌫️ Dibaca Samar + Dengung 2 Harakat", "🔊 Dibaca Jelas 'N'"], correct: "🌫️ Dibaca Samar + Dengung 2 Harakat", hint1: "Nun sukun bertemu Kaf.", hint2: "Ikhfa Haqiqi." },
+                    { word: "مِنْ لَدُنْهُ", prompt: "Bagaimana cara membaca Idgham Bilaghunnah ini?", options: ["🛡️ Lebur Masuk Tanpa Dengung (Mil-ladunhu)", "⚡ Lebur Masuk Dengan Dengung"], correct: "🛡️ Lebur Masuk Tanpa Dengung (Mil-ladunhu)", hint1: "Bilaghunnah: Tanpa Dengung.", hint2: "Mil-ladunhu." }
+                ],
+                detective: [
+                    { word: "كُفُوًا أَحَدٌ", prompt: "Identifikasi sebab hukum tajwid pada lafaz ini:", options: ["Tanwin ( ً ) bertemu Hamzah (أ) -> Izhar Halqi", "Tanwin bertemu Ba -> Iqlab", "Nun sukun bertemu Ha -> Izhar"], correct: "Tanwin ( ً ) bertemu Hamzah (أ) -> Izhar Halqi", hint1: "Tanwin bertemu Hamzah.", hint2: "Izhar Halqi." },
+                    { word: "مِنْ شَرِّ", prompt: "Identifikasi sebab hukum tajwid pada lafaz ini:", options: ["Nun Sukun (نْ) bertemu Syin (ش) -> Ikhfa Haqiqi", "Nun sukun bertemu Syin -> Idgham Bighunnah"], correct: "Nun Sukun (نْ) bertemu Syin (ش) -> Ikhfa Haqiqi", hint1: "Syin huruf Ikhfa.", hint2: "Ikhfa Haqiqi." }
+                ],
+                final: [
+                    { word: "مِنْ هَادٍ", options: ["🔊 IZHAR HALQI", "🔄 IQLAB", "🌫️ IKHFA HAQIQI"], correct: "🔊 IZHAR HALQI", hint1: "Izhar Halqi.", hint2: "Izhar Halqi." },
+                    { word: "مِنْ بَعْدِ", options: ["🔄 IQLAB", "⚡ IDGHAM BIGHUNNAH", "🛡️ IDGHAM BILAGHUNNAH"], correct: "🔄 IQLAB", hint1: "Iqlab.", hint2: "Iqlab." },
+                    { word: "عَنْ صَلَاتِهِمْ", options: ["🌫️ IKHFA HAQIQI", "🔊 IZHAR HALQI", "⚡ IDGHAM BIGHUNNAH"], correct: "🌫️ IKHFA HAQIQI", hint1: "Ikhfa Haqiqi.", hint2: "Ikhfa Haqiqi." },
+                    { word: "مِنْ مَالٍ", options: ["⚡ IDGHAM BIGHUNNAH", "🛡️ IDGHAM BILAGHUNNAH", "🔄 IQLAB"], correct: "⚡ IDGHAM BIGHUNNAH", hint1: "Idgham Bighunnah.", hint2: "Idgham Bighunnah." },
+                    { word: "مِنْ رَبِّهِمْ", options: ["🛡️ IDGHAM BILAGHUNNAH", "⚡ IDGHAM BIGHUNNAH", "🔊 IZHAR HALQI"], correct: "🛡️ IDGHAM BILAGHUNNAH", hint1: "Idgham Bilaghunnah.", hint2: "Idgham Bilaghunnah." },
+                    { word: "بُنْيَانٌ", options: ["🚨 IZHAR MUTLAQ", "⚡ IDGHAM BIGHUNNAH", "🌫️ IKHFA HAQIQI"], correct: "🚨 IZHAR MUTLAQ", hint1: "Izhar Mutlaq.", hint2: "Izhar Mutlaq." }
+                ]
+            }
+        };
+
+        class AcademyApp {
+            constructor() {
+                this.state = {
+                    currentChapter: 0, // 0: Fondasi, 1: Izhar, 2: Idgham Bighunnah, 3: Idgham Bilaghunnah, 4: Iqlab, 5: Ikhfa, 6: Izhar Mutlaq, 7: Terpadu, 8: Grand Final
+                    playerName: 'Santri Bintang',
+                    currentStepIndex: 0,
+                    totalGoals: 0,
+                    questionIndex: 0,
+                    wrongAttempts: 0,
+                    hintLevel: 0,
+                    activeBankKey: 'letters',
+                    currentQuestions: [],
+
+                    stats: {
+                        letters: { correct: 0, wrong: 0, hints: 0, total: 5 },
+                        rules: { correct: 0, wrong: 0, hints: 0, total: 5 },
+                        detective: { correct: 0, wrong: 0, hints: 0, total: 5 },
+                        final: { correct: 0, wrong: 0, hints: 0, total: 5 }
+                    },
+
+                    matchState: {
+                        selectedLeft: null,
+                        matchedPairs: 0
+                    },
+
+                    confirmCallback: null
+                };
+
+                this.onNextCallback = null;
+            }
+
+            init() {
+                this.updateScoreboard();
+                this.showLogin();
+            }
+
+            updateScoreboard() {
+                const goalsFormatted = this.state.totalGoals % 1 === 0 ? this.state.totalGoals : this.state.totalGoals.toFixed(1);
+                document.getElementById('headerGoalCount').innerText = goalsFormatted;
+                document.getElementById('headerPlayerName').innerText = this.state.playerName || "Santri";
+                
+                const labelsChapter = {
+                    0: "CHAPTER 0 — FONDASI NUN SUKUN & TANWIN",
+                    1: "CHAPTER 1 — IZHAR HALQI",
+                    2: "CHAPTER 2 — IDGHAM BIGHUNNAH",
+                    3: "CHAPTER 3 — IDGHAM BILAGHUNNAH",
+                    4: "CHAPTER 4 — HUKUM IQLAB",
+                    5: "CHAPTER 5 — IKHFA HAQIQI",
+                    6: "CHAPTER 6 — IZHAR MUTLAQ",
+                    7: "CHAPTER 7 — SIMULASI TAKTIS TERPADU",
+                    8: "🏆 GRAND FINAL ALL-STAR"
+                };
+                document.getElementById('headerChapterLabel').innerText = labelsChapter[this.state.currentChapter] || "CHAPTER 0 — FONDASI NUN SUKUN & TANWIN";
+
+                const percent = Math.min(100, Math.round((this.state.currentStepIndex / 10) * 100));
+                document.getElementById('progressBar').style.width = percent + '%';
+                document.getElementById('progressText').innerText = `${this.state.currentStepIndex} / 10 TAHAP`;
+
+                const labels = [
+                    "REGISTRASI SQUAD",
+                    "STADION UTAMA",
+                    "MATERI 1: PERMAINAN HUKUM", 
+                    "LATIHAN 1: SPOTTING HURUF & TANDA",
+                    "MATERI 2: TEKNIK BACAAN BINTANG", 
+                    "LATIHAN 2: UJI TEKNIK BACAAN", 
+                    "LATIHAN 3: MATCHING LAFAZ MATCH",
+                    "MATERI 3: TANTANGAN DETEKTIF", 
+                    "LATIHAN 4: DETEKTIF SEBAB HUKUM",
+                    "FINAL MATCH: MASTERY TOURNAMENT",
+                    "PLAYER CARD & RAPOR DIAGNOSTIK"
+                ];
+                document.getElementById('stageLabel').innerText = labels[this.state.currentStepIndex] || "STADION UTAMA";
+            }
+
+            showLogin() {
+                this.state.currentStepIndex = 0;
+                this.updateScoreboard();
+
+                const container = document.getElementById('appContainer');
+                container.innerHTML = `
+                    <div class="stadium-gradient rounded-3xl p-6 sm:p-10 text-center border-4 border-red-600 shadow-2xl max-w-xl mx-auto my-auto relative overflow-hidden">
+                        <div class="absolute inset-0 opacity-10 pitch-bg pointer-events-none"></div>
+
+                        <div class="relative z-10">
+                            <!-- Crest Logo -->
+                            <div class="w-20 h-20 mx-auto bg-gradient-to-tr from-red-600 to-amber-500 rounded-full p-1 shadow-xl mb-3 flex items-center justify-center animate-bounce-slow">
+                                <div class="w-full h-full bg-slate-900 rounded-full flex flex-col items-center justify-center border-2 border-amber-400">
+                                    <span class="text-3xl">⚽</span>
+                                </div>
+                            </div>
+
+                            <span class="px-3 py-1 rounded-full bg-red-950/80 border border-red-500/50 text-red-400 font-bold text-xs uppercase tracking-widest inline-block mb-2">
+                                🔴 MU TAJWID ACADEMY — NUN SUKUN & TANWIN
+                            </span>
+
+                            <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight mb-2">
+                                WELCOME TO MU TAJWID ACADEMY!
+                            </h1>
+
+                            <div class="bg-slate-900/90 border border-amber-500/40 p-4 rounded-2xl mb-6 text-left">
+                                <p class="text-amber-300 font-medium text-xs sm:text-sm italic mb-1 font-arabic text-right">
+                                    "خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ"
+                                </p>
+                                <p class="text-slate-200 text-xs sm:text-sm font-semibold leading-relaxed">
+                                    🌟 <em>"Sebaik-baik kalian adalah yang mempelajari Al-Qur'an dan mengajarkannya."</em> (HR. Bukhari)
+                                </p>
+                                <p class="text-amber-400 text-xs font-bold mt-2">
+                                    ⚽ Kuasai seluruh taktik Tajwid Hukum Nun Sukun & Tanwin dari Chapter 0 hingga Grand Final All-Star!
+                                </p>
+                            </div>
+
+                            <form onsubmit="event.preventDefault(); app.savePlayerName();" class="space-y-4 text-left">
+                                <div>
+                                    <label class="block text-xs font-black text-amber-400 uppercase tracking-wider mb-2">
+                                        NAMA LENGKAP / PANGGILAN SANTRI:
+                                    </label>
+                                    <input type="text" id="playerNameInput" required placeholder="Contoh: Ahmad / Fatimah" value="${this.state.playerName === 'Santri Bintang' ? '' : this.state.playerName}" class="w-full px-4 py-3.5 rounded-xl bg-slate-900 border-2 border-slate-700 focus:border-amber-400 text-white font-bold text-base focus:outline-none transition">
+                                </div>
+
+                                <button type="submit" onclick="audio.playKick();" class="w-full py-4 rounded-2xl bg-gradient-to-r from-red-600 via-red-500 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white font-black text-lg shadow-xl shadow-red-600/40 transform hover:-translate-y-0.5 transition active:translate-y-0 flex items-center justify-center gap-2">
+                                    <span>MASUK SQUAD ACADEMY</span>
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                `;
+
+                setTimeout(() => {
+                    const input = document.getElementById('playerNameInput');
+                    if (input) input.focus();
+                }, 100);
+            }
+
+            savePlayerName() {
+                const input = document.getElementById('playerNameInput');
+                if (input && input.value.trim() !== "") {
+                    this.state.playerName = input.value.trim();
+                } else {
+                    this.state.playerName = "Santri Bintang";
+                }
+                this.updateScoreboard();
+                this.showHome();
+            }
+
+            showChapterSelectModal() {
+                audio.playClick();
+                document.getElementById('chapterModal').classList.remove('hidden');
+            }
+
+            closeChapterSelectModal() {
+                audio.playClick();
+                document.getElementById('chapterModal').classList.add('hidden');
+            }
+
+            selectChapter(chIndex) {
+                this.closeChapterSelectModal();
+                this.state.currentChapter = chIndex;
+                this.resetState();
+                this.showHome();
+            }
+
+            showHome() {
+                this.state.currentStepIndex = 1;
+                this.updateScoreboard();
+
+                const ch = this.state.currentChapter;
+                const quote = CHAPTER_QUOTES[ch] || CHAPTER_QUOTES[0];
+
+                const chapterTitles = {
+                    0: { title: "CHAPTER 0: FONDASI TAJWID", badge: "⚽ FONDASI NUN SUKUN & TANWIN", info: "Mengenal bentuk Nun Sukun (نْ) dan Tanwin ( ً ٍ ٌ ) serta kesamaan bunyi 'N' mati." },
+                    1: { title: "CHAPTER 1: IZHAR HALQI", badge: "🔊 BACAAN JELAS (6 HURUF)", info: "Membaca jelas, jernih, dan tegas tanpa dengung saat bertemu 6 huruf Halqi (ء, هـ, ع, ح, غ, خ)." },
+                    2: { title: "CHAPTER 2: IDGHAM BIGHUNNAH", badge: "⚡ LEBUR DENGAN DENGUNG", info: "Memasukkan bunyi Nun/Tanwin ke huruf YANMU (ي, ن, م, و) disertai dengung 2 harakat." },
+                    3: { title: "CHAPTER 3: IDGHAM BILAGHUNNAH", badge: "🛡️ LEBUR TANPA DENGUNG", info: "Memasukkan bunyi Nun/Tanwin ke huruf Lam & Ra (ل , ر) secara tegas tanpa dengung." },
+                    4: { title: "CHAPTER 4: HUKUM IQLAB", badge: "🔄 PERTUKARAN 'N' KE 'M'", info: "Menukar bunyi Nun/Tanwin menjadi Mim (مْ) bila bertemu huruf Ba (ب) + dengung 2 harakat." },
+                    5: { title: "CHAPTER 5: IKHFA HAQIQI", badge: "🌫️ BACAAN SAMAR (15 HURUF)", info: "Membaca samar antara Izhar & Idgham dengan dengung 2 harakat pada 15 huruf Ikhfa." },
+                    6: { title: "CHAPTER 6: IZHAR MUTLAQ", badge: "🚨 PENGECUALIAN 1 KATA", info: "Pengecualian wajib dibaca JELAS bila Nun Sukun & huruf Idgham berada dalam 1 KATA (Ad-Dunya, Bunyan, dll.)." },
+                    7: { title: "CHAPTER 7: SIMULASI TERPADU", badge: "🎯 LATIHAN TAKTIS KOMBINAIS", info: "Simulasi terpadu membedakan seluruh hukum Nun Sukun & Tanwin secara akurat." },
+                    8: { title: "GRAND FINAL TOURNAMENT", badge: "🏆 TANTANGAN AGUNG SQUAD", info: "Uji seluruh pemahaman tajwid Nun Sukun & Tanwin dari Izhar, Idgham, Iqlab, Ikhfa, hingga Izhar Mutlaq!" }
+                };
+
+                const details = chapterTitles[ch];
+
+                const container = document.getElementById('appContainer');
+                container.innerHTML = `
+                    <div class="stadium-gradient rounded-3xl p-6 sm:p-10 text-center border-4 border-red-600 shadow-2xl relative overflow-hidden my-auto">
+                        <div class="absolute inset-0 opacity-10 pitch-bg pointer-events-none"></div>
+
+                        <div class="relative z-10 max-w-2xl mx-auto">
+                            <div class="w-20 h-20 sm:w-24 sm:h-24 mx-auto bg-gradient-to-tr from-red-600 to-amber-500 rounded-full p-1 shadow-2xl mb-3 animate-bounce-slow flex items-center justify-center">
+                                <div class="w-full h-full bg-slate-900 rounded-full flex flex-col items-center justify-center border-2 border-amber-400">
+                                    <span class="text-3xl">${ch === 8 ? '🏆' : '⚽'}</span>
+                                    <span class="text-[9px] font-black tracking-widest text-red-500">CHAPTER ${ch}</span>
+                                </div>
+                            </div>
+
+                            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/20 border border-amber-400/50 text-amber-300 font-extrabold text-xs sm:text-sm uppercase tracking-wider mb-3">
+                                <span>👕 PEMAIN BINTANG:</span>
+                                <span class="text-white underline">${this.state.playerName.toUpperCase()}</span>
+                            </div>
+                            
+                            <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight mb-2">
+                                ${details.title}
+                            </h1>
+                            <p class="text-amber-400 font-bold text-base sm:text-lg mb-4">
+                                "${details.badge}"
+                            </p>
+
+                            <!-- QUOTE & PEMANTIK PENYEMANGAT -->
+                            <div class="bg-slate-900/90 border border-amber-500/40 p-5 rounded-2xl mb-6 text-left shadow-lg">
+                                <p class="text-amber-300 font-medium text-sm sm:text-base italic mb-1 font-arabic text-right">
+                                    "${quote.arabic}"
+                                </p>
+                                <p class="text-slate-200 text-xs sm:text-sm font-semibold leading-relaxed mb-3">
+                                    🌟 <em>"${quote.translation}"</em>
+                                </p>
+                                <div class="p-3 bg-red-950/80 border border-red-500/40 rounded-xl text-amber-300 text-xs sm:text-sm font-bold flex items-center gap-2">
+                                    <span>🔥</span>
+                                    <span>${quote.spark}</span>
+                                </div>
+                            </div>
+
+                            <button onclick="audio.playKick(); app.showMateri1();" class="w-full sm:w-auto px-10 py-4 rounded-2xl bg-gradient-to-r from-red-600 via-red-500 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white font-black text-xl shadow-xl shadow-red-600/40 transform hover:-translate-y-1 transition active:translate-y-0 flex items-center justify-center gap-3 mx-auto">
+                                <span>⚽ MULAI STADIUM ACADEMY</span>
+                                <i class="fa-solid fa-play text-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            showMateri1() {
+                this.state.currentStepIndex = 2;
+                this.updateScoreboard();
+
+                const ch = this.state.currentChapter;
+                let htmlContent = "";
+
+                if (ch === 0) {
+                    htmlContent = `
+                        <h2 class="text-2xl sm:text-3xl font-black text-white mb-2 text-center">FONDASI NUN SUKUN & TANWIN</h2>
+                        <div class="bg-gradient-to-r from-red-950 via-slate-900 to-amber-950 border-2 border-amber-400 p-5 rounded-2xl text-center mb-6 shadow-xl">
+                            <span class="text-xs text-amber-300 font-black uppercase tracking-widest">💡 FORMULA BENTUK:</span>
+                            <div class="grid grid-cols-2 gap-4 my-4">
+                                <div class="bg-slate-900 border border-slate-700 p-3 rounded-2xl text-center">
+                                    <div class="text-3xl font-arabic text-amber-400 font-bold">نْ</div>
+                                    <div class="text-xs text-slate-200 font-bold mt-1">Nun Sukun</div>
+                                    <div class="text-[10px] text-slate-400">Tertulis & Dibaca Bunyi 'N'</div>
+                                </div>
+                                <div class="bg-slate-900 border border-slate-700 p-3 rounded-2xl text-center">
+                                    <div class="text-3xl font-arabic text-amber-300 font-bold">ً ٍ ٌ</div>
+                                    <div class="text-xs text-slate-200 font-bold mt-1">Tanwin (An, In, Un)</div>
+                                    <div class="text-[10px] text-slate-400">Dibaca Bunyi 'N' Secara Lisan</div>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-200 text-left">📌 Persamaan keduanya: Sama-sama menghasilkan bunyi **N mati** saat diucapkan!</p>
+                        </div>
+                    `;
+                } else if (ch === 1) {
+                    htmlContent = `
+                        <h2 class="text-2xl sm:text-3xl font-black text-white mb-2 text-center">TAKTIK IZHAR HALQI: 6 HURUF HALQI</h2>
+                        <div class="bg-slate-900 border-2 border-amber-400 p-5 rounded-2xl text-center mb-6 shadow-xl">
+                            <span class="text-xs text-amber-300 font-black uppercase tracking-widest">💡 6 HURUF TENGGOROKAN:</span>
+                            <div class="grid grid-cols-6 gap-2 my-4 text-2xl font-arabic font-bold text-amber-300">
+                                <div class="p-2 bg-slate-800 rounded-xl">أ</div><div class="p-2 bg-slate-800 rounded-xl">هـ</div><div class="p-2 bg-slate-800 rounded-xl">ع</div><div class="p-2 bg-slate-800 rounded-xl">ح</div><div class="p-2 bg-slate-800 rounded-xl">غ</div><div class="p-2 bg-slate-800 rounded-xl">خ</div>
+                            </div>
+                            <p class="text-xs text-slate-200 text-left">📌 Membaca bunyi Nun Sukun / Tanwin secara **JELAS, TEGAS, TANPA DENGUNG** saat bertemu 6 huruf tenggorokan ini.</p>
+                        </div>
+                    `;
+                } else if (ch === 2) {
+                    htmlContent = `
+                        <h2 class="text-2xl sm:text-3xl font-black text-white mb-2 text-center">TAKTIK LEBUR DENGUNG: RUMUS YANMU (يَنْمُو)</h2>
+                        <div class="bg-slate-900 border-2 border-amber-400 p-5 rounded-2xl text-center mb-6 shadow-xl">
+                            <span class="text-xs text-amber-300 font-black uppercase tracking-widest">💡 4 HURUF IDGHAM BIGHUNNAH:</span>
+                            <div class="flex justify-center gap-4 my-4 text-3xl font-arabic font-bold text-amber-300">
+                                <div class="p-3 bg-slate-800 rounded-2xl border border-amber-500/50">ي</div>
+                                <div class="p-3 bg-slate-800 rounded-2xl border border-amber-500/50">ن</div>
+                                <div class="p-3 bg-slate-800 rounded-2xl border border-amber-500/50">م</div>
+                                <div class="p-3 bg-slate-800 rounded-2xl border border-amber-500/50">و</div>
+                            </div>
+                            <p class="text-xs text-slate-200 text-left">📌 Disiingkat <strong>YANMU (يَنْمُو)</strong>. Bunyi N/Tanwin lebur masuk ke huruf berikutnya disertai dengung 2 harakat!</p>
+                        </div>
+                    `;
+                } else if (ch === 3) {
+                    htmlContent = `
+                        <h2 class="text-2xl sm:text-3xl font-black text-white mb-2 text-center">TAKTIK LEBUR TANPA DENGUNG: LAM & RA (ل , ر)</h2>
+                        <div class="bg-slate-900 border-2 border-amber-400 p-5 rounded-2xl text-center mb-6 shadow-xl">
+                            <span class="text-xs text-amber-300 font-black uppercase tracking-widest">💡 2 HURUF IDGHAM BILAGHUNNAH:</span>
+                            <div class="flex justify-center gap-6 my-4 text-4xl font-arabic font-bold text-amber-300">
+                                <div class="p-4 bg-slate-800 rounded-2xl border border-amber-500/50 px-8">ل</div>
+                                <div class="p-4 bg-slate-800 rounded-2xl border border-amber-500/50 px-8">ر</div>
+                            </div>
+                            <p class="text-xs text-slate-200 text-left">📌 Bunyi N/Tanwin lebur seutuhnya ke huruf Lam atau Ra secara tegas tanpa ditahan dengung sedikitpun!</p>
+                        </div>
+                    `;
+                } else if (ch === 4) {
+                    htmlContent = `
+                        <h2 class="text-2xl sm:text-3xl font-black text-white mb-2 text-center">TAKTIK PERTUKARAN: HURUF BA (ب)</h2>
+                        <div class="bg-gradient-to-r from-red-950 via-slate-900 to-amber-950 border-2 border-amber-400 p-5 rounded-2xl text-center mb-6 shadow-xl">
+                            <span class="text-xs text-amber-300 font-black uppercase tracking-widest">💡 FORMULA IQLAB:</span>
+                            <div class="flex items-center justify-center gap-2 sm:gap-4 my-4">
+                                <div class="bg-slate-900 border border-slate-700 p-3 rounded-2xl text-center">
+                                    <div class="text-2xl font-arabic text-amber-400 font-bold">نْ / ً ٍ ٌ</div>
+                                    <div class="text-[10px] text-slate-300 font-bold mt-1">Nun Sukun / Tanwin</div>
+                                </div>
+                                <div class="text-2xl text-amber-400 font-black">+</div>
+                                <div class="bg-slate-900 border-2 border-amber-400 p-3 rounded-2xl text-center">
+                                    <div class="text-3xl font-arabic text-amber-300 font-bold">ب</div>
+                                    <div class="text-[10px] text-amber-300 font-bold mt-1">Huruf Ba</div>
+                                </div>
+                                <div class="text-2xl text-emerald-400 font-black">=</div>
+                                <div class="bg-emerald-950/80 border-2 border-emerald-400 p-3 rounded-2xl text-center">
+                                    <div class="text-3xl font-arabic text-emerald-400 font-bold">مْ</div>
+                                    <div class="text-[10px] text-emerald-300 font-bold mt-1">Berubah jadi Mim</div>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-200 text-left">📌 Tanda Mim kecil (م) di Mushaf menunjukkan bahwa bunyi Nun bertukar posisi jadi Mim!</p>
+                        </div>
+                    `;
+                } else if (ch === 5) {
+                    htmlContent = `
+                        <h2 class="text-2xl sm:text-3xl font-black text-white mb-2 text-center">TAKTIK SAMAR: 15 HURUF IKHFA HAQIQI</h2>
+                        <div class="bg-slate-900 border-2 border-amber-400 p-5 rounded-2xl text-center mb-6 shadow-xl">
+                            <span class="text-xs text-amber-300 font-black uppercase tracking-widest">💡 15 HURUF IKHFA:</span>
+                            <div class="grid grid-cols-5 gap-2 my-4 text-xl sm:text-2xl font-arabic font-bold text-amber-300">
+                                <div class="p-2 bg-slate-800 rounded-xl">ت</div><div class="p-2 bg-slate-800 rounded-xl">ث</div><div class="p-2 bg-slate-800 rounded-xl">ج</div><div class="p-2 bg-slate-800 rounded-xl">د</div><div class="p-2 bg-slate-800 rounded-xl">ذ</div>
+                                <div class="p-2 bg-slate-800 rounded-xl">ز</div><div class="p-2 bg-slate-800 rounded-xl">س</div><div class="p-2 bg-slate-800 rounded-xl">ش</div><div class="p-2 bg-slate-800 rounded-xl">ص</div><div class="p-2 bg-slate-800 rounded-xl">ض</div>
+                                <div class="p-2 bg-slate-800 rounded-xl">ط</div><div class="p-2 bg-slate-800 rounded-xl">ظ</div><div class="p-2 bg-slate-800 rounded-xl">ف</div><div class="p-2 bg-slate-800 rounded-xl">ق</div><div class="p-2 bg-slate-800 rounded-xl">ك</div>
+                            </div>
+                            <p class="text-xs text-slate-200 text-left">📌 Bunyi 'N' disamarkan di antara Izhar dan Idgham, lalu ditahan dengung 2 harakat!</p>
+                        </div>
+                    `;
+                } else if (ch === 6) {
+                    htmlContent = `
+                        <h2 class="text-2xl sm:text-3xl font-black text-white mb-2 text-center">TAKTIK PENGECUALIAN: IZHAR MUTLAQ (1 KATA)</h2>
+                        <div class="bg-slate-900 border-2 border-amber-400 p-5 rounded-2xl text-center mb-6 shadow-xl">
+                            <span class="text-xs text-amber-300 font-black uppercase tracking-widest">💡 4 KATA KHUSUS DI AL-QUR'AN:</span>
+                            <div class="grid grid-cols-2 gap-3 my-4 text-2xl font-arabic font-bold text-amber-300">
+                                <div class="p-3 bg-slate-800 rounded-2xl border border-amber-500/50">الدُّنْيَا</div>
+                                <div class="p-3 bg-slate-800 rounded-2xl border border-amber-500/50">بُنْيَانٌ</div>
+                                <div class="p-3 bg-slate-800 rounded-2xl border border-amber-500/50">صِنْوَانٌ</div>
+                                <div class="p-3 bg-slate-800 rounded-2xl border border-amber-500/50">قِنْوَانٌ</div>
+                            </div>
+                            <p class="text-xs text-slate-200 text-left">📌 Apabila Nun Sukun bertemu Ya atau Wawu dalam **1 KATA**, maka TIDAK BENTUK IDGHAM, melainkan **WAJIB DIBACA JELAS** (Izhar Mutlaq)!</p>
+                        </div>
+                    `;
+                } else if (ch === 7) {
+                    htmlContent = `
+                        <h2 class="text-2xl sm:text-3xl font-black text-white mb-2 text-center">SIMULASI TAKTIS & KOMBINASI TAJWID</h2>
+                        <div class="bg-slate-900 border-2 border-amber-400 p-5 rounded-2xl text-center mb-6 shadow-xl">
+                            <span class="text-xs text-amber-300 font-black uppercase tracking-widest">🎯 MAPS STRATEGI BACAAN:</span>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 my-4 text-xs font-bold text-left">
+                                <div class="p-2 bg-slate-800 rounded-xl text-amber-300">🔊 Izhar Halqi: Dibaca Jelas (6 Huruf)</div>
+                                <div class="p-2 bg-slate-800 rounded-xl text-emerald-400">🔄 Iqlab: Berubah 'M' + Dengung (Ba - ب)</div>
+                                <div class="p-2 bg-slate-800 rounded-xl text-sky-400">🌫️ Ikhfa Haqiqi: Dibaca Samar (15 Huruf)</div>
+                                <div class="p-2 bg-slate-800 rounded-xl text-purple-400">⚡ Idgham Bighunnah: Lebur + Dengung (YANMU)</div>
+                                <div class="p-2 bg-slate-800 rounded-xl text-red-400 col-span-1 sm:col-span-2 text-center">🛡️ Idgham Bilaghunnah: Lebur Tanpa Dengung (Lam & Ra)</div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    htmlContent = `
+                        <h2 class="text-2xl sm:text-3xl font-black text-white mb-2 text-center">GRAND FINAL: ALL NUN SUKUN & TANWIN LAWS</h2>
+                        <div class="bg-slate-900 border-2 border-amber-400 p-5 rounded-2xl text-center mb-6 shadow-xl">
+                            <span class="text-xs text-amber-300 font-black uppercase tracking-widest">🏆 5 HUKUM UTAMA + IZHAR MUTLAQ:</span>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 my-4 text-xs font-bold text-left">
+                                <div class="p-2 bg-slate-800 rounded-xl text-amber-300">🔊 Izhar Halqi: Jelas</div>
+                                <div class="p-2 bg-slate-800 rounded-xl text-emerald-400">🔄 Iqlab: Berubah 'M'</div>
+                                <div class="p-2 bg-slate-800 rounded-xl text-sky-400">🌫️ Ikhfa Haqiqi: Samar</div>
+                                <div class="p-2 bg-slate-800 rounded-xl text-purple-400">⚡ Idgham Bighunnah: Lebur + Dengung</div>
+                                <div class="p-2 bg-slate-800 rounded-xl text-red-400">🛡️ Idgham Bilaghunnah: Lebur Tanpa Dengung</div>
+                                <div class="p-2 bg-slate-800 rounded-xl text-amber-400">🚨 Izhar Mutlaq: 1 Kata Terpadu</div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                const container = document.getElementById('appContainer');
+                container.innerHTML = `
+                    <div class="academy-card rounded-3xl p-6 sm:p-8 my-auto border-2 border-red-500/50">
+                        <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
+                            <span class="px-3 py-1 rounded-full bg-red-950 border border-red-600/50 text-red-400 font-extrabold text-xs">
+                                ⚽ TAHAP 1 — MATERI & STRATEGI
+                            </span>
+                            <span class="text-xs text-amber-400 font-bold">MATERI SQUAD</span>
+                        </div>
+
+                        ${htmlContent}
+
+                        <button onclick="audio.playKick(); app.startLettersQuiz();" class="w-full py-4 rounded-2xl bg-gradient-to-r from-red-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white font-black text-lg shadow-lg transition flex items-center justify-center gap-2">
+                            <span>SIAP TAMPIL DI LATIHAN 1</span>
+                            <i class="fa-solid fa-check-circle"></i>
+                        </button>
+                    </div>
+                `;
+            }
+
+            startLettersQuiz() {
+                this.state.currentStepIndex = 3;
+                this.state.questionIndex = 0;
+                this.state.activeBankKey = 'letters';
+                this.state.currentQuestions = shuffleArray(CHAPTER_BANKS[this.state.currentChapter].letters);
+                this.updateScoreboard();
+                this.renderQuizStep();
+            }
+
+            showMateri2() {
+                this.state.currentStepIndex = 4;
+                this.updateScoreboard();
+
+                const container = document.getElementById('appContainer');
+                container.innerHTML = `
+                    <div class="academy-card rounded-3xl p-6 sm:p-8 my-auto border-2 border-red-500/50">
+                        <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
+                            <span class="px-3 py-1 rounded-full bg-red-950 border border-red-600/50 text-red-400 font-extrabold text-xs">
+                                ⚽ TAHAP 2 — TEKNIK BACAAN
+                            </span>
+                            <span class="text-xs text-amber-400 font-bold">EKSEKUSI PEMAIN</span>
+                        </div>
+
+                        <h2 class="text-2xl sm:text-3xl font-black text-white mb-4 text-center">
+                            TEKNIK BACAAN PRESISI BINTANG SQUAD
+                        </h2>
+
+                        <div class="bg-slate-900 border-2 border-amber-400 p-5 rounded-2xl text-center mb-6 shadow-lg">
+                            <h3 class="text-lg font-black text-amber-400 mb-2">🎯 ATURAN DURASI & DENGUNG (GHUNNAH)</h3>
+                            <div class="text-xs text-slate-200 leading-relaxed text-left space-y-2">
+                                <p>• <strong>Ghunnah (Dengung):</strong> Suara berdengung yang keluar dari rongga hidung (Al-Khaisyum) sepanjang <strong>2 Harakat</strong> (pada Idgham Bighunnah, Iqlab, dan Ikhfa).</p>
+                                <p>• <strong>Tanpa Dengung (Bilaghunnah / Izhar):</strong> Suara diucapkan tegas dan jelas tanpa ditahan di hidung.</p>
+                            </div>
+                        </div>
+
+                        <button onclick="audio.playKick(); app.startRulesQuiz();" class="w-full py-4 rounded-2xl bg-gradient-to-r from-red-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white font-black text-lg shadow-lg transition flex items-center justify-center gap-2">
+                            <span>AKU PAHAM TEKNIK BACAAN</span>
+                            <i class="fa-solid fa-check-circle"></i>
+                        </button>
+                    </div>
+                `;
+            }
+
+            startRulesQuiz() {
+                this.state.currentStepIndex = 5;
+                this.state.questionIndex = 0;
+                this.state.activeBankKey = 'rules';
+                this.state.currentQuestions = shuffleArray(CHAPTER_BANKS[this.state.currentChapter].rules);
+                this.updateScoreboard();
+                this.renderQuizStep();
+            }
+
+            startMatchGame() {
+                this.state.currentStepIndex = 6;
+                this.state.matchState = { selectedLeft: null, matchedPairs: 0 };
+                this.updateScoreboard();
+
+                const leftItems = [
+                    { id: '1', symbol: 'مِنْ بَعْدِ' },
+                    { id: '2', symbol: 'مِنْ دُونِ' },
+                    { id: '3', symbol: 'مَنْ يَقُولُ' }
+                ];
+
+                const rightItems = shuffleArray([
+                    { id: '1', name: '🔄 Iqlab (Nun Sukun + Ba)' },
+                    { id: '2', name: '🌫️ Ikhfa Haqiqi (Nun Sukun + Dal)' },
+                    { id: '3', name: '⚡ Idgham Bighunnah (Nun Sukun + Ya)' }
+                ]);
+
+                const container = document.getElementById('appContainer');
+                container.innerHTML = `
+                    <div class="academy-card rounded-3xl p-6 sm:p-8 my-auto border-2 border-red-500/50">
+                        <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
+                            <span class="px-3 py-1 rounded-full bg-red-950 border border-red-600/50 text-red-400 font-extrabold text-xs">
+                                🔄 LATIHAN 3 — MATCHING LAFAZ MATCH
+                            </span>
+                            <span class="text-xs text-amber-400 font-bold">MATCHING GAME</span>
+                        </div>
+
+                        <h2 class="text-xl sm:text-2xl font-black text-white mb-2 text-center">
+                            PASANGKAN LAFAZ DENGAN HUKUM TAJWIDNYA
+                        </h2>
+                        <p class="text-slate-300 text-xs sm:text-sm text-center mb-6">
+                            Klik lafaz di kolom kiri, lalu sambungkan dengan hukum yang tepat di kolom kanan!
+                        </p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                            <div class="space-y-3" id="matchLeftCol">
+                                ${leftItems.map(item => `
+                                    <button onclick="app.selectMatchLeft('${item.id}', this)" class="match-left-btn w-full p-4 rounded-2xl bg-slate-900 border-2 border-slate-700 hover:border-amber-400 text-2xl font-arabic text-amber-300 font-bold transition flex items-center justify-center h-20 shadow-md">
+                                        ${item.symbol}
+                                    </button>
+                                `).join('')}
+                            </div>
+
+                            <div class="space-y-3" id="matchRightCol">
+                                ${rightItems.map(item => `
+                                    <button onclick="app.selectMatchRight('${item.id}', this)" class="match-right-btn w-full p-4 rounded-2xl bg-slate-900 border-2 border-slate-700 hover:border-amber-400 text-xs sm:text-sm font-extrabold text-white transition flex items-center justify-center h-20 shadow-md">
+                                        ${item.name}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div id="matchFeedback" class="text-center font-bold text-sm min-h-[24px]"></div>
+                    </div>
+                `;
+            }
+
+            selectMatchLeft(id, btn) {
+                audio.playClick();
+                document.querySelectorAll('.match-left-btn').forEach(b => {
+                    b.classList.remove('border-amber-400', 'bg-amber-500/20');
+                    b.classList.add('border-slate-700');
+                });
+                btn.classList.remove('border-slate-700');
+                btn.classList.add('border-amber-400', 'bg-amber-500/20');
+                this.state.matchState.selectedLeft = { id, btn };
+            }
+
+            selectMatchRight(id, btn) {
+                if (!this.state.matchState.selectedLeft) {
+                    audio.playTryAgain();
+                    document.getElementById('matchFeedback').innerHTML = `<span class="text-amber-400">💡 Pilih lafaz di kolom kiri terlebih dahulu!</span>`;
+                    return;
+                }
+
+                const left = this.state.matchState.selectedLeft;
+                if (left.id === id) {
+                    audio.playGoal();
+                    left.btn.classList.add('bg-emerald-600/30', 'border-emerald-500', 'pointer-events-none');
+                    btn.classList.add('bg-emerald-600/30', 'border-emerald-500', 'pointer-events-none');
+                    this.state.matchState.selectedLeft = null;
+                    this.state.matchState.matchedPairs++;
+
+                    document.getElementById('matchFeedback').innerHTML = `<span class="text-emerald-400">⚽ GOAL! Pasangan yang tepat!</span>`;
+
+                    if (this.state.matchState.matchedPairs === 3) {
+                        this.state.totalGoals += 1;
+                        setTimeout(() => {
+                            this.showFeedbackModal(
+                                "⚽ GOAL MATCH SPEKTAKULER!",
+                                `MasyaAllah, ${this.state.playerName}! Analisis tajwid kamu luar biasa! (+1 Goal)`,
+                                () => { this.showMateri3(); }
+                            );
+                        }, 500);
+                    }
+                } else {
+                    audio.playTryAgain();
+                    document.getElementById('matchFeedback').innerHTML = `<span class="text-red-400">💡 Belum tepat, perhatikan pertemuannya!</span>`;
+                }
+            }
+
+            showMateri3() {
+                this.state.currentStepIndex = 7;
+                this.updateScoreboard();
+
+                const container = document.getElementById('appContainer');
+                container.innerHTML = `
+                    <div class="academy-card rounded-3xl p-6 sm:p-8 my-auto border-2 border-red-500/50 text-center">
+                        <div class="w-16 h-16 mx-auto bg-amber-500/20 text-amber-400 text-3xl rounded-full flex items-center justify-center mb-3 border border-amber-500/40">
+                            🔍
+                        </div>
+                        <h2 class="text-2xl sm:text-3xl font-black text-white mb-2">
+                            DETEKTIF TAJWID AL-QUR'AN
+                        </h2>
+                        <p class="text-slate-300 text-xs sm:text-sm max-w-md mx-auto mb-6">
+                            Teliti setiap sebab hukum tajwid dan buktikan analisis akademimu!
+                        </p>
+
+                        <button onclick="audio.playKick(); app.startDetectiveQuiz();" class="w-full py-4 rounded-2xl bg-gradient-to-r from-red-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white font-black text-lg shadow-lg transition flex items-center justify-center gap-2">
+                            <span>MULAI TANTANGAN DETEKTIF</span>
+                            <i class="fa-solid fa-search"></i>
+                        </button>
+                    </div>
+                `;
+            }
+
+            startDetectiveQuiz() {
+                this.state.currentStepIndex = 8;
+                this.state.questionIndex = 0;
+                this.state.activeBankKey = 'detective';
+                this.state.currentQuestions = shuffleArray(CHAPTER_BANKS[this.state.currentChapter].detective);
+                this.updateScoreboard();
+                this.renderQuizStep();
+            }
+
+            startFinalQuiz() {
+                this.state.currentStepIndex = 9;
+                this.state.questionIndex = 0;
+                this.state.activeBankKey = 'final';
+                this.state.currentQuestions = shuffleArray(CHAPTER_BANKS[this.state.currentChapter].final);
+                this.updateScoreboard();
+                this.renderQuizStep();
+            }
+
+            renderQuizStep() {
+                this.state.wrongAttempts = 0;
+                this.state.hintLevel = 0;
+
+                const questions = this.state.currentQuestions;
+                if (!questions || this.state.questionIndex >= questions.length) {
+                    this.advanceStage(this.state.activeBankKey);
+                    return;
+                }
+
+                const q = questions[this.state.questionIndex];
+                const randomizedOptions = shuffleArray(q.options);
+
+                const container = document.getElementById('appContainer');
+                container.innerHTML = `
+                    <div class="academy-card rounded-3xl p-6 sm:p-8 my-auto border-2 border-slate-700 relative overflow-hidden">
+                        <div class="flex justify-between items-center text-xs text-slate-400 font-extrabold mb-4 pb-2 border-b border-slate-800">
+                            <span class="text-red-400">SOAL ${this.state.questionIndex + 1} DARI ${questions.length}</span>
+                            <span class="text-amber-400">REWARD: +1 GOAL</span>
+                        </div>
+
+                        <p class="text-xs sm:text-sm font-bold text-slate-300 text-center uppercase tracking-wider mb-2">
+                            ${q.prompt || "Tentukan jawaban yang tepat pada lafaz berikut:"}
+                        </p>
+
+                        <div class="bg-slate-900/90 border-2 border-slate-700 rounded-3xl p-8 text-center my-4 shadow-inner">
+                            <div class="text-5xl sm:text-7xl font-arabic text-amber-300 font-bold tracking-wide drop-shadow">
+                                ${q.word}
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 ${randomizedOptions.length > 2 ? 'sm:grid-cols-3' : 'sm:grid-cols-2'} gap-3 my-6">
+                            ${randomizedOptions.map(opt => `
+                                <button onclick="app.checkAnswer(this.getAttribute('data-opt'))" data-opt="${opt.replace(/"/g, '&quot;')}" class="py-4 px-4 rounded-2xl bg-slate-900 border-2 border-slate-700 hover:border-amber-400 text-white font-black text-sm sm:text-base transition transform active:scale-95 shadow-md hover:shadow-amber-500/20 flex items-center justify-center text-center">
+                                    ${opt}
+                                </button>
+                            `).join('')}
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-800/80 flex flex-col sm:flex-row justify-center items-center gap-3">
+                            <button onclick="app.useHint(1)" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-amber-500/20 border border-amber-500/40 hover:bg-amber-500/30 text-amber-300 font-bold text-xs flex items-center justify-center gap-2 transition">
+                                <span>🟡 MASIH RAGU</span>
+                            </button>
+                            <button onclick="app.useHint(2)" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-red-500/20 border border-red-500/40 hover:bg-red-500/30 text-red-300 font-bold text-xs flex items-center justify-center gap-2 transition">
+                                <span>🔴 BELUM TAHU</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            checkAnswer(chosen) {
+                audio.playKick();
+                const bankKey = this.state.activeBankKey;
+                const statsGroup = this.state.stats[bankKey];
+                const q = this.state.currentQuestions[this.state.questionIndex];
+
+                if (chosen === q.correct) {
+                    audio.playGoal();
+                    const reward = (this.state.hintLevel > 0) ? 0.5 : 1.0;
+                    this.state.totalGoals += reward;
+                    statsGroup.correct++;
+
+                    this.showFeedbackModal(
+                        "⚽ GOAL SPEKTAKULER!",
+                        `MasyaAllah, ${this.state.playerName}! Jawaban kamu sangat tepat! (+${reward} Goal)`,
+                        () => {
+                            this.state.questionIndex++;
+                            this.renderQuizStep();
+                        }
+                    );
+                } else {
+                    audio.playTryAgain();
+                    this.state.wrongAttempts++;
+                    statsGroup.wrong++;
+
+                    if (this.state.wrongAttempts === 1) {
+                        this.showFeedbackModal(
+                            "💡 BELUM TEPAT",
+                            `Tidak apa-apa, ${this.state.playerName}. Mari kita periksa kembali huruf & hukumnya!`,
+                            null
+                        );
+                    } else {
+                        this.showFeedbackModal(
+                            "💡 MARI LIHAT PETUNJUK",
+                            `Tetap semangat ${this.state.playerName}! Mari kita simak petunjuk penjelasannya!`,
+                            () => {
+                                this.useHint(2);
+                            }
+                        );
+                    }
+                }
+            }
+
+            useHint(level) {
+                audio.playHint();
+                const q = this.state.currentQuestions[this.state.questionIndex];
+                const text = level === 1 ? q.hint1 : q.hint2;
+                this.state.hintLevel = level;
+                this.state.stats[this.state.activeBankKey].hints++;
+                
+                const title = (level === 1) ? "💡 PETUNJUK 1: SPOTTING GUIDE" : "💡 PETUNJUK 2: FORMULA GUIDE";
+                document.getElementById('hintTitle').innerText = title;
+                document.getElementById('hintBody').innerHTML = `<p class="text-amber-300 font-bold">${text}</p><p class="text-xs text-slate-400 mt-2">Menjawab benar setelah petunjuk mendapat +0.5 Goal!</p>`;
+                document.getElementById('hintModal').classList.remove('hidden');
+            }
+
+            closeHint() {
+                audio.playClick();
+                document.getElementById('hintModal').classList.add('hidden');
+            }
+
+            advanceStage(key) {
+                if (key === 'letters') {
+                    this.showMateri2();
+                } else if (key === 'rules') {
+                    this.startMatchGame();
+                } else if (key === 'detective') {
+                    this.startFinalQuiz();
+                } else if (key === 'final') {
+                    this.showResults();
+                }
+            }
+
+            showFeedbackModal(title, message, callback) {
+                document.getElementById('feedbackTitle').innerText = title;
+                document.getElementById('feedbackMessage').innerText = message;
+                this.onNextCallback = callback;
+                document.getElementById('feedbackModal').classList.remove('hidden');
+            }
+
+            closeFeedback() {
+                audio.playClick();
+                document.getElementById('feedbackModal').classList.add('hidden');
+                if (typeof this.onNextCallback === 'function') {
+                    const cb = this.onNextCallback;
+                    this.onNextCallback = null;
+                    cb();
+                }
+            }
+
+            promptRestartGame() {
+                document.getElementById('customConfirmModal').classList.remove('hidden');
+            }
+
+            closeConfirmModal(confirmed) {
+                document.getElementById('customConfirmModal').classList.add('hidden');
+                if (confirmed) {
+                    this.resetState();
+                    this.showLogin();
+                }
+            }
+
+            showResults() {
+                audio.playWhistle();
+                this.state.currentStepIndex = 10;
+                this.updateScoreboard();
+
+                const totalGoalsFormatted = this.state.totalGoals % 1 === 0 ? this.state.totalGoals : this.state.totalGoals.toFixed(1);
+                const ch = this.state.currentChapter;
+
+                // REWARD TITLES (JULUKAN REWARD)
+                let rewardTitle = "PEMAIN HARAPAN SQUAD";
+                let rewardBadge = "🥉 BRONZE PLAYER";
+                
+                if (this.state.totalGoals >= 15) {
+                    rewardTitle = "MAESTRO TAJWID ALL-STAR MU ACADEMY";
+                    rewardBadge = "👑 GOLDEN LEGEND";
+                } else if (this.state.totalGoals >= 10) {
+                    if (ch === 0) rewardTitle = "PIONIR FONDASI TAJWID";
+                    else if (ch === 1) rewardTitle = "EKSEKUTOR CLEAR IZHAR HALQI";
+                    else if (ch === 2) rewardTitle = "PLAYMAKER DENGUNG IDGHAM BIGHUNNAH";
+                    else if (ch === 3) rewardTitle = "DEFENDER TEGAS IDGHAM BILAGHUNNAH";
+                    else if (ch === 4) rewardTitle = "MASTER PERTUKARAN IQLAB";
+                    else if (ch === 5) rewardTitle = "SNIPER PRESISI IKHFA HAQIQI";
+                    else if (ch === 6) rewardTitle = "PAHAR DUKUNGAN IZHAR MUTLAQ";
+                    else if (ch === 7) rewardTitle = "STRATEGIS KONTROL ALL-ROUND TAJWID";
+                    else rewardTitle = "BINTANG UTAMA GRAND FINAL ALL-STAR";
+                    rewardBadge = "🥇 GOLD PLAYER";
+                } else if (this.state.totalGoals >= 6) {
+                    rewardTitle = "PLAYMAKER TAJWID ANDALAN";
+                    rewardBadge = "🥈 SILVER PLAYER";
+                }
+
+                const container = document.getElementById('appContainer');
+                container.innerHTML = `
+                    <div class="space-y-8 my-auto">
+                        <!-- OFFICIAL PLAYER CARD WITH JULUKAN REWARD -->
+                        <div class="${ch === 8 ? 'trophy-card-bg' : 'player-card-bg'} rounded-3xl p-6 sm:p-8 text-center shadow-2xl relative overflow-hidden max-w-xl mx-auto">
+                            <div class="flex justify-between items-center mb-6 border-b border-amber-400/30 pb-4">
+                                <div class="text-left">
+                                    <div class="text-[10px] text-amber-300 font-black tracking-widest uppercase">MU TAJWID ACADEMY — ${ch === 8 ? 'GRAND FINAL' : 'CHAPTER ' + ch}</div>
+                                    <div class="text-2xl font-black text-white">${this.state.playerName.toUpperCase()}</div>
+                                </div>
+                                <div class="text-4xl">${ch === 8 ? '🏆' : '👑'}</div>
+                            </div>
+
+                            <div class="my-4">
+                                <div class="text-xs text-amber-300 font-extrabold uppercase tracking-widest">JULUKAN REWARD OFFICIAL:</div>
+                                <div class="text-2xl sm:text-3xl font-black text-amber-300 my-2 drop-shadow-md">
+                                    "${rewardTitle}"
+                                </div>
+                                <div class="inline-block px-4 py-1.5 rounded-full bg-slate-950/80 border border-amber-400/50 text-amber-300 font-black text-xs uppercase">
+                                    ${rewardBadge} &bull; ⚽ ${totalGoalsFormatted} GOALS
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-950/70 rounded-2xl p-4 text-left space-y-2 mb-6 border border-amber-500/30 text-xs sm:text-sm">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-slate-200 font-semibold">🎯 Akurasi Huruf & Tanda</span>
+                                    <span class="text-amber-400">⭐⭐⭐⭐</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-slate-200 font-semibold">⚡ Eksekusi Dengung & Cara Baca</span>
+                                    <span class="text-amber-400">⭐⭐⭐⭐</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-slate-200 font-semibold">🕵️‍♂️ Analisis Detektif Sebab</span>
+                                    <span class="text-amber-400">⭐⭐⭐⭐</span>
+                                </div>
+                            </div>
+
+                            <p class="text-xs sm:text-sm text-slate-100 italic leading-relaxed font-medium">
+                                "Barakallahu fiik, ${this.state.playerName}! Kamu telah menyelesaikan sesi dengan luar biasa! Teruskan bacaan Tartil Al-Qur'anmu setiap hari!"
+                            </p>
+                        </div>
+
+                        <!-- LAPORAN DIAGNOSTIK GURU & ORANG TUA -->
+                        <div class="academy-card rounded-3xl p-6 sm:p-8 border-2 border-slate-700">
+                            <div class="flex items-center gap-2 text-red-500 font-extrabold text-sm uppercase tracking-wider mb-2">
+                                <i class="fa-solid fa-clipboard-list"></i>
+                                <span>CATATAN DIAGNOSTIK GURU & ORANG TUA</span>
+                            </div>
+                            <h3 class="text-xl font-extrabold text-white mb-1">📊 LAPORAN KEMAJUAN TAJWID</h3>
+                            <p class="text-amber-400 font-bold text-xs mb-4">SANTRI: ${this.state.playerName}</p>
+
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6 text-center text-xs">
+                                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700">
+                                    <div class="text-slate-400">BENAR</div>
+                                    <div class="text-lg font-black text-emerald-400">
+                                        ${this.state.stats.letters.correct + this.state.stats.rules.correct + this.state.stats.detective.correct + this.state.stats.final.correct}
+                                    </div>
+                                </div>
+                                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700">
+                                    <div class="text-slate-400">SALAH</div>
+                                    <div class="text-lg font-black text-red-400">
+                                        ${this.state.stats.letters.wrong + this.state.stats.rules.wrong + this.state.stats.detective.wrong + this.state.stats.final.wrong}
+                                    </div>
+                                </div>
+                                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700">
+                                    <div class="text-slate-400">PETUNJUK</div>
+                                    <div class="text-lg font-black text-amber-400">
+                                        ${this.state.stats.letters.hints + this.state.stats.rules.hints + this.state.stats.detective.hints + this.state.stats.final.hints}
+                                    </div>
+                                </div>
+                                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700">
+                                    <div class="text-slate-400">TOTAL GOALS</div>
+                                    <div class="text-lg font-black text-amber-400">${totalGoalsFormatted}</div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <button onclick="app.resetState(); app.showHome();" class="py-3.5 px-6 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-extrabold text-base transition flex items-center justify-center gap-2 border border-slate-600">
+                                    <i class="fa-solid fa-rotate-right"></i>
+                                    <span>🔄 ULANGI CHAPTER INI</span>
+                                </button>
+                                <button onclick="app.showChapterSelectModal();" class="py-3.5 px-6 rounded-2xl bg-gradient-to-r from-red-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white font-black text-base transition flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-trophy"></i>
+                                    <span>PILIH CHAPTER LAIN</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            resetState() {
+                this.state.totalGoals = 0;
+                this.state.questionIndex = 0;
+                this.state.wrongAttempts = 0;
+                this.state.hintLevel = 0;
+                this.state.stats = {
+                    letters: { correct: 0, wrong: 0, hints: 0, total: 5 },
+                    rules: { correct: 0, wrong: 0, hints: 0, total: 5 },
+                    detective: { correct: 0, wrong: 0, hints: 0, total: 5 },
+                    final: { correct: 0, wrong: 0, hints: 0, total: 5 }
+                };
+            }
+        }
+
+        let app;
+        window.onload = function() {
+            app = new AcademyApp();
+            app.init();
+        };
+    </script>
+</body>
+</html>
